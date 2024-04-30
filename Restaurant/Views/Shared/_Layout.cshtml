@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject Restaurant.Common.DTOs.CurrentUserDTO CurrentUser
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -26,6 +28,27 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+                </div>
+                <div class="align-self-center w-25 d-flex justify-content-end">
+                    @if (CurrentUser.IsAuthenticated)
+                    {
+                        <div>
+                            <a asp-controller="User" asp-action="Details" class="nav-link"><i class="bi bi-person"></i>@CurrentUser.Name</a>
+                        </div>
+                        <div>
+                            <a asp-controller="User" asp-action="Logout" class="nav-link"><i class="bi bi-door-open"></i>Log out</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            <a asp-controller="User" asp-action="Login" class="nav-link"><i class="bi bi-box-arrow-in-right"></i>Log in</a>
+                        </div>
+                        <div>
+                            <a asp-controller="User" asp-action="Register" class="nav-link"><i class="bi bi-person-add"></i>Register</a>
+                        </div>
+
+                    }
                 </div>
             </div>
         </nav>
