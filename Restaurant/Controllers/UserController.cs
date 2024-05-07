@@ -27,9 +27,10 @@ namespace Restaurant.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(RegisterModel model)
+        public async Task<IActionResult> Register(RegisterModel model)
         {
-            Service.RegisterUser(model);
+            var user = await Service.RegisterUser(model);
+            await LoginUtils.LogIn(user, HttpContext);
             return RedirectToAction("Index", "Home");
         }
 

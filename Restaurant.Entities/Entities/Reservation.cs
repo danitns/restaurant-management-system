@@ -13,6 +13,8 @@ public partial class Reservation
 
     public Guid? TableId { get; set; }
 
+    public DateTime Date { get; set; }
+
     public virtual Bill? Bill { get; set; }
 
     public virtual Table? Table { get; set; }
