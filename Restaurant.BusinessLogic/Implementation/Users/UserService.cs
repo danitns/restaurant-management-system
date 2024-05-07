@@ -17,7 +17,7 @@ namespace Restaurant.BusinessLogic.Implementation.Users
             RegisterValidator = new RegisterValidator(UnitOfWork);
         }
 
-        public void RegisterUser(RegisterModel model)
+        public async Task<CurrentUserDTO> RegisterUser(RegisterModel model)
         {
             RegisterValidator.Validate(model).ThenThrow(model);
 
@@ -29,6 +29,8 @@ namespace Restaurant.BusinessLogic.Implementation.Users
 
             UnitOfWork.Users.Insert(user);
             UnitOfWork.SaveChanges();
+
+            return await Login(model.Email, model.Password);
         }
 
         public async Task<CurrentUserDTO> Login(string email, string password)
