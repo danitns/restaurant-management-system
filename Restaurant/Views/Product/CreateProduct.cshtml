@@ -1,0 +1,49 @@
+﻿@model Restaurant.BusinessLogic.Implementation.Products.Models.CreateProductModel
+@using Restaurant.Entities.Enums
+
+@{
+    ViewData["Title"] = "CreateProduct";
+}
+
+<h1>Create Product</h1>
+
+<div class="row">
+    <div class="col-md-4 ml-auto mr-auto">
+        <form asp-action="CreateProduct" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">Name</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubcategoryId" class="control-label">Subcategory</label>
+                <select asp-for="SubcategoryId" asp-items="Html.GetEnumSelectList<SubcategoryTypes>()"></select>
+                <span asp-validation-for="SubcategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label">Price</label>
+                <input type="number" asp-for="Price" class="form-control" step="0.5" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Picture" class="control-label">Picture</label>
+                <input type="file" asp-for="Picture" class="form-control-file" accept="image/*" />
+                <span asp-validation-for="Picture" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" asp-controller="Home">Back to Home Page</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
