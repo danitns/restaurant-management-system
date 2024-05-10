@@ -6,6 +6,9 @@ using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Common.DTOs;
 using Restaurant.Entities.Enums;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Table = Restaurant.Entities.Table;
+using Restaurant.BusinessLogic.Implementation.Tables.Models;
 
 namespace Restaurant.BusinessLogic.Implementation.Users
 {
@@ -70,5 +73,6 @@ namespace Restaurant.BusinessLogic.Implementation.Users
             var hashedPasswordToString = Encoding.UTF8.GetString(computedHash);
             return hashedPasswordToString;
         }
+
     }
 }
