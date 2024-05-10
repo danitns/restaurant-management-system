@@ -67,6 +67,7 @@ create table Reservation (
 	UserId uniqueidentifier,
 	Phone nvarchar(15),
 	TableId uniqueidentifier,
+	[Date] datetime not null,
 	constraint FK_RESERVATION_USER foreign key (UserId) references [User](Id),
 	constraint FK_RESERVATION_TABLE foreign key (TableId) references [Table](Id)
 )
