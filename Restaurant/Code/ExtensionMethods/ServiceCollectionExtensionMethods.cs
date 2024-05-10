@@ -1,5 +1,6 @@
 ﻿using Restaurant.BusinessLogic.Base;
 using Restaurant.BusinessLogic.Implementation.Tables;
+using Restaurant.BusinessLogic.Implementation.Products;
 using Restaurant.BusinessLogic.Implementation.Users;
 using Restaurant.Common.DTOs;
 using Restaurant.Web.Code.Base;
@@ -21,6 +22,7 @@ namespace Restaurant.Web.Code.ExtensionMethods
             services.AddScoped<ServiceDependencies>();
             services.AddScoped<UserService>();
             services.AddScoped<TableService>();
+            services.AddScoped<ProductService>();
             return services;
         }
 

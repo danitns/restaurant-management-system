@@ -19,7 +19,7 @@ namespace Restaurant.BusinessLogic.Implementation.Users
         {
             RegisterValidator = new RegisterValidator(UnitOfWork);
         }
-
+            
         public async Task<CurrentUserDTO> RegisterUser(RegisterModel model)
         {
             RegisterValidator.Validate(model).ThenThrow(model);
