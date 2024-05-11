@@ -1,0 +1,43 @@
+﻿@model Restaurant.BusinessLogic.Implementation.Reservations.CreateReservationModel
+
+@{
+	ViewData["Title"] = "Reservation";
+}
+
+<h1>Create Reservation</h1>
+
+<div class="row">
+	<div class="col-md-4 ml-auto mr-auto">
+		<form asp-action="CreateReservation" enctype="multipart/form-data">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="NumberOfGuests" class="control-label">Number of guests:</label>
+				<input asp-for="NumberOfGuests" type="number" class="form-control" />
+				<span asp-validation-for="NumberOfGuests" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Date" class="control-label">Date: </label>
+				<input asp-for="Date" type="date" class="form-control" />
+				<span asp-validation-for="Date" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Time" class="control-label">Time: </label>
+				<select asp-for="Time" id="timeSelect" class="form-control">
+					<option selected="selected" value="">Please select</option>
+				</select>
+				<span asp-validation-for="Time" class="text-danger"></span>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div>
+	<a asp-action="Index" asp-controller="Home">Back to Home Page</a>
+</div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}
+

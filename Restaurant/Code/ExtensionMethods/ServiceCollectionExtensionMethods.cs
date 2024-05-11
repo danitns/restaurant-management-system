@@ -1,4 +1,5 @@
 ﻿using Restaurant.BusinessLogic.Base;
+using Restaurant.BusinessLogic.Implementation.Reservations;
 using Restaurant.BusinessLogic.Implementation.Users;
 using Restaurant.Common.DTOs;
 using Restaurant.Web.Code.Base;
@@ -19,6 +20,7 @@ namespace Restaurant.Web.Code.ExtensionMethods
         {
             services.AddScoped<ServiceDependencies>();
             services.AddScoped<UserService>();
+            services.AddScoped<ReservationService>();
             return services;
         }
 
