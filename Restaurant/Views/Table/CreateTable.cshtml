@@ -1,0 +1,38 @@
+﻿@model Restaurant.BusinessLogic.Implementation.Tables.Models.TableModel
+
+@{
+    ViewData["Title"] = "Table";
+}
+
+<h1>Table</h1>
+
+<div class="row">
+    <div class="col-md-4 ml-auto mr-auto">
+        <form asp-action="CreateTable" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">Table name</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Seats" class="control-label">Number of seats</label>
+                <input asp-for="Seats" class="form-control" />
+                <span asp-validation-for="Seats" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Add Table" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to Home Page</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

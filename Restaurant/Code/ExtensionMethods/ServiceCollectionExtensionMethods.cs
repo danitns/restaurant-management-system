@@ -1,4 +1,6 @@
 ﻿using Restaurant.BusinessLogic.Base;
+using Restaurant.BusinessLogic.Implementation.Tables;
+using Restaurant.BusinessLogic.Implementation.Products;
 using Restaurant.BusinessLogic.Implementation.Reservations;
 using Restaurant.BusinessLogic.Implementation.Users;
 using Restaurant.Common.DTOs;
@@ -20,8 +22,10 @@ namespace Restaurant.Web.Code.ExtensionMethods
         {
             services.AddScoped<ServiceDependencies>();
             services.AddScoped<UserService>();
-            services.AddScoped<ReservationService>();
-            return services;
+			services.AddScoped<TableService>();
+			services.AddScoped<ProductService>();
+			services.AddScoped<ReservationService>();
+			return services;
         }
 
         public static IServiceCollection AddTicketAppCurrentUser(this IServiceCollection services)
