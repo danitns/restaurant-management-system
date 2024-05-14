@@ -1,4 +1,5 @@
-﻿using Restaurant.BusinessLogic.Base;
+﻿using Microsoft.EntityFrameworkCore;
+using Restaurant.BusinessLogic.Base;
 using Restaurant.BusinessLogic.Implementation.Products.Models;
 using Restaurant.BusinessLogic.Implementation.Products.Validations;
 using Restaurant.Common.Extensions;
@@ -37,5 +38,11 @@ public class ProductService : BaseService
 
         UnitOfWork.Products.Insert(product);
         await UnitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<IEnumerable<ViewProductModel>> GetProducts()
+    {
+        var products = await UnitOfWork.Products.Get().ToListAsync();
+        return Mapper.Map<IEnumerable<Product>, IEnumerable<ViewProductModel>>(products);
     }
 }

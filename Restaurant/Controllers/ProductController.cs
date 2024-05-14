@@ -14,9 +14,12 @@ public class ProductController : BaseController
         Service = service;
     }
 
-    public IActionResult Index()
+    [HttpGet]
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var model = await Service.GetProducts();
+
+        return View("Index", model);
     }
 
     [HttpGet]
