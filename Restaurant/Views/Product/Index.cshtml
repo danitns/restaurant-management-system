@@ -7,6 +7,10 @@
 
 <h1 class="text-center">Our products</h1>
 
+<div>
+    <a class="btn btn-outline-dark" asp-action="CreateProduct" asp-controller="Product">Create product</a>
+</div>
+
 @if (Model.Count() > 0)
 {
     <div class="container">
@@ -31,4 +35,8 @@ else
         <h3>There are no products to display.</h3>
     </div>
 }
+
+<div>
+    <a asp-action="Index" asp-controller="Home">Back to Home Page</a>
+</div>
 
