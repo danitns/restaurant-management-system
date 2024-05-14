@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Restaurant.BusinessLogic.Implementation.Users;
 using Restaurant.Web.Code.Base;
 using Restaurant.Web.Code.Utils;
