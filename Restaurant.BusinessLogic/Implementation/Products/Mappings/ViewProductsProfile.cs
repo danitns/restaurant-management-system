@@ -14,8 +14,6 @@ namespace Restaurant.BusinessLogic.Implementation.Products.Mappings
         public ViewProductsProfile()
         {
             CreateMap<Product, ViewProductModel>();
-                /*.ForMember(a => a.Picture, a => a.MapFrom(s => s.Picture))
-                .ForMember(a => a.Subcategory, a => a.MapFrom(s => s.Subcategory));*/
         }
     }
 }
