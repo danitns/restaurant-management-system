@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Restaurant.BusinessLogic.Base;
 using Restaurant.BusinessLogic.Implementation.Reservations.Validations;
+using Restaurant.Common.Exceptions;
 using Restaurant.Common.Extensions;
 using Restaurant.Entities;
 using System;
@@ -42,82 +43,64 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 			CreateReservationValidator.Validate(model).ThenThrow(model);
 			var reservation = Mapper.Map<CreateReservationModel, Reservation>(model);
 
+			var modelTimeParseResult = TimeOnly.TryParse(model.Time, out var parsedTime);
+
+			if (modelTimeParseResult == false)
+			{
+				throw new FormatException();
+			}
+
+			var tables = await UnitOfWork.Tables
+				.Get()
+				.Include(t => t.Reservations)
+				.Where(t => t.Seats >= model.NumberOfGuests)
+				.OrderBy(t => t.Seats)
+				.ToListAsync();
+
+			var availableTable = tables.FirstOrDefault(t =>
+				!t.Reservations.Any(r => TimeOnly.FromDateTime(r.Date) == parsedTime ||
+										   TimeOnly.FromDateTime(r.Date) == parsedTime.AddHours(1) ||
+										   TimeOnly.FromDateTime(r.Date) == parsedTime.AddHours(-1)));
+
+			if (availableTable == null)
+			{
+				throw new NotFoundErrorException();
+			}
+
+			reservation.TableId = availableTable.Id;
+			if(CurrentUser.IsAuthenticated)
+			{
+				reservation.UserId = CurrentUser.Id;	
+			}
+
 			UnitOfWork.Reservations.Insert(reservation);
 			await UnitOfWork.SaveChangesAsync();
 		}
 
 		public async Task<List<string>> GetAvailableHours(DateOnly date, int numberOfGuests)
 		{
-			var tables = await UnitOfWork.Tables.Get().OrderBy(t => t.Seats).Select(t => t.Id).ToListAsync();
-			var reservations = await UnitOfWork.Reservations
+			var tables = await UnitOfWork.Tables
 				.Get()
-				.Include(r => r.Table)
-				.Where(r => DateOnly.FromDateTime(r.Date).Equals(date)
-					&& r.Table != null
-					&& r.Table.Seats >= numberOfGuests)
-				.Select(r => new { TableId = r.TableId, Date = r.Date })
+				.Include(t => t.Reservations)
+				.OrderBy(t => t.Seats)
 				.ToListAsync();
 
-			var availabilityMatrix = InitializeAvailabilityMatrix(tables.Count());
+			var freeIntervals = new List<string>();
 
-			foreach (var reservation in reservations)
+			foreach (var time in AllReservationHours)
 			{
-				var startIndex = AllReservationHours.FindIndex(a => a == TimeOnly.FromDateTime(reservation.Date));
-				var endIndex = startIndex + 2;
-				for (int i = startIndex; i < endIndex && i < AllReservationHours.Count(); i++)
+				var isFree = tables
+					.Where(t => !t.Reservations.Any(r => TimeOnly.FromDateTime(r.Date) == time
+						|| TimeOnly.FromDateTime(r.Date) == time.AddHours(1)
+						|| TimeOnly.FromDateTime(r.Date) == time.AddHours(-1)))
+					.Any();
+
+				if (isFree == true)
 				{
-					availabilityMatrix[reservations.IndexOf(reservation)][i] = 1;
+					freeIntervals.Add(time.ToString());
 				}
 			}
-
-			var availableIntervals = FindAvailableIntervals(availabilityMatrix);
-
-			return availableIntervals;
-		}
-
-		private int[][] InitializeAvailabilityMatrix(int numberOfTables)
-		{
-			int[][] availabilityMatrix = new int[numberOfTables][];
-			for (int i = 0; i < numberOfTables; i++)
-			{
-				availabilityMatrix[i] = new int[AllReservationHours.Count()];
-			}
-			return availabilityMatrix;
-		}
-
-		private List<string> FindAvailableIntervals(int[][] availabilityMatrix)
-		{
-			var availableIntervals = new List<string>();
-
-			foreach (var row in availabilityMatrix)
-			{
-				int start = -1;
-				for (int i = 0; i < row.Length; i++)
-				{
-					if (row[i] == 0)
-					{
-						if (start == -1)
-						{
-							start = i;
-						}
-					}
-					else
-					{
-						if (start != -1 && i - start >= 2)
-						{
-							availableIntervals.Add($"{AllReservationHours[start]} - {AllReservationHours[i - 1]}");
-						}
-						start = -1;
-					}
-				}
-				
-				if (start != -1 && row[row.Length - 1] == 0)
-				{
-					availableIntervals.Add($"{AllReservationHours[start]} - {AllReservationHours[row.Length - 1]}");
-				}
-			}
-
-			return availableIntervals;
+			return freeIntervals;
 		}
 	}
 }

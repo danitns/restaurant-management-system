@@ -43,6 +43,7 @@ namespace Restaurant.Web.Code.ExtensionMethods
                     var isParsingSuccessful = Guid.TryParse(userIdClaim, out Guid id);
                     var emailClaim = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
                     var roleClaim = claims?.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+                    var phoneClaim = claims?.FirstOrDefault(c => c.Type == ClaimTypes.MobilePhone)?.Value;
 
                     return new CurrentUserDTO
                     {
@@ -51,7 +52,7 @@ namespace Restaurant.Web.Code.ExtensionMethods
                         Name = httpContext.User.Identity.Name,
                         Email = emailClaim,
                         Role = roleClaim,
-
+                        Phone = phoneClaim,
                     };
                 }
                 return new CurrentUserDTO() { };

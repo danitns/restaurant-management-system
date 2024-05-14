@@ -58,6 +58,7 @@ namespace Restaurant.BusinessLogic.Implementation.Users
                     Name = $"{user.FirstName} {user.LastName}",
                     IsAuthenticated = true,
                     Role = Enum.GetName(typeof(RoleTypes), user.RoleId),
+                    Phone = user.Phone,
                 };
 
                 return currentUser;
