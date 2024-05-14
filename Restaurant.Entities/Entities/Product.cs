@@ -13,9 +13,11 @@ public partial class Product
 
     public int SubcategoryId { get; set; }
 
+    public Guid RestaurantId { get; set; }
+
     public decimal Price { get; set; }
 
-    public virtual ICollection<BillProduct> BillProducts { get; set; } = new List<BillProduct>();
+    public virtual Restaurant Restaurant { get; set; } = null!;
 
     public virtual Subcategory Subcategory { get; set; } = null!;
 }

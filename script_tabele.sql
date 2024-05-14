@@ -1,14 +1,14 @@
 use restaurant;
 
-drop table Bill_Product;
-drop table Bill;
-drop table Reservation;
-drop table [Table];
-drop table Product;
-drop table Subcategory;
-drop table Category;
-drop table [User];
-drop table [Role];
+drop table if exists Reservation;
+drop table if exists [Table];
+drop table if exists Product;
+drop table if exists Subcategory;
+drop table if exists Category;
+drop table if exists Restaurant;
+drop table if exists City;
+drop table if exists [User];
+drop table if exists [Role];
 
 create table [Role] (
 	Id int primary key,
@@ -31,6 +31,23 @@ create table [User] (
 	constraint UQ_USER_PHONE unique(Phone)
 )
 
+create table [City] (
+	Id int primary key,
+	[Name] nvarchar(255) not null,
+	constraint UQ_CITY_NAME unique([Name])
+)
+
+create table Restaurant (
+	Id uniqueidentifier primary key,
+	[Name] nvarchar(255) not null,
+	[Address] nvarchar(255) not null,
+	CityId int not null,
+	UserId uniqueidentifier not null,
+	constraint FK_RESTAURANT_CITY foreign key(CityId) references City(Id),
+	constraint FK_RESTAURANT_USER foreign key (UserId) references [User](Id),
+	constraint UQ_RESTAURANT_NAME unique([Name])
+)
+
 create table Category (
 	Id int primary key,
 	[Name] nvarchar(255) not null,
@@ -50,8 +67,10 @@ create table Product (
 	Picture varbinary(max),
 	[Name] nvarchar(255) not null,
 	SubcategoryId int not null,
+	RestaurantId uniqueidentifier not null,
 	Price money not null,
 	constraint FK_PRODUCT_SUBCATEGORY foreign key (SubcategoryId) references Subcategory(Id),
+	constraint FK_PRODUCT_RESTAURANT foreign key (RestaurantId) references Restaurant(Id),
 	constraint UQ_PRODUCT_NAME unique([Name])
 )
 
@@ -72,24 +91,15 @@ create table Reservation (
 	constraint FK_RESERVATION_TABLE foreign key (TableId) references [Table](Id)
 )
 
-create table Bill (
-	Id uniqueidentifier primary key,
-	TableId uniqueidentifier not null,
-	constraint FK_BILL_RESERVATION foreign key (Id) references Reservation(Id)
-)
-
-create table Bill_Product (
-	BillId uniqueidentifier,
-	ProductId uniqueidentifier,
-	Quantity int not null,
-	constraint PK_BILL_PRODUCT primary key(BillId, ProductId),
-	constraint FK_BILL_PRODUCT_BILL foreign key (BillId) references Bill(Id),
-	constraint FK_BILL_PRODUCT_PRODUCT foreign key (ProductId) references Product(Id)
-)
+insert into City values 
+(1, 'Bucharest'),
+(2, 'Cluj'),
+(3, 'Timisoara'),
+(4, 'Brasov')
 
 insert into [Role] values
 (1, 'User'),
-(2, 'Waiter'),
+(2, 'Manager'),
 (3, 'Admin')
 
 insert into [Category] values

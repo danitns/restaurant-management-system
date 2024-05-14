@@ -17,12 +17,12 @@ namespace Restaurant.DataAccess
             Context = context;
         }
 
-        private IRepository<Bill> bills;
-        public IRepository<Bill> Bills => bills ?? (bills = new BaseRepository<Bill>(Context));
+        private IRepository<City> cities;
+        public IRepository<City> Cities => cities ?? (cities = new BaseRepository<City>(Context));
 
 
-        private IRepository<BillProduct> billProducts;
-        public IRepository<BillProduct> BillsProducts => billProducts ?? (billProducts = new BaseRepository<BillProduct>(Context));
+        private IRepository<Entities.Restaurant> restaurants;
+        public IRepository<Entities.Restaurant> Restaurants => restaurants ?? (restaurants = new BaseRepository<Entities.Restaurant>(Context));
 
 
         private IRepository<Category> categories;
