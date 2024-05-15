@@ -50,10 +50,12 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 				throw new FormatException();
 			}
 
+			var restaurantId = await GetRestaurantIdByName(model.RestaurantName);
+
 			var tables = await UnitOfWork.Tables
 				.Get()
 				.Include(t => t.Reservations)
-				.Where(t => t.Seats >= model.NumberOfGuests)
+				.Where(t => t.Seats >= model.NumberOfGuests && t.RestaurantId == restaurantId)
 				.OrderBy(t => t.Seats)
 				.ToListAsync();
 
@@ -77,11 +79,14 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 			await UnitOfWork.SaveChangesAsync();
 		}
 
-		public async Task<List<string>> GetAvailableHours(DateOnly date, int numberOfGuests)
+		public async Task<List<string>> GetAvailableHours(DateOnly date, int numberOfGuests, string restaurantName)
 		{
+			var restaurantId = await GetRestaurantIdByName(restaurantName);
+
 			var tables = await UnitOfWork.Tables
 				.Get()
 				.Include(t => t.Reservations)
+				.Where(t => t.Seats >= numberOfGuests && t.RestaurantId == restaurantId)
 				.OrderBy(t => t.Seats)
 				.ToListAsync();
 
@@ -90,9 +95,9 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 			foreach (var time in AllReservationHours)
 			{
 				var isFree = tables
-					.Where(t => !t.Reservations.Any(r => TimeOnly.FromDateTime(r.Date) == time
+					.Where(t => !t.Reservations.Any(r => DateOnly.FromDateTime(r.Date) == date && (TimeOnly.FromDateTime(r.Date) == time
 						|| TimeOnly.FromDateTime(r.Date) == time.AddHours(1)
-						|| TimeOnly.FromDateTime(r.Date) == time.AddHours(-1)))
+						|| TimeOnly.FromDateTime(r.Date) == time.AddHours(-1))))
 					.Any();
 
 				if (isFree == true)
@@ -101,6 +106,18 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 				}
 			}
 			return freeIntervals;
+		}
+
+		private async Task<Guid> GetRestaurantIdByName(string name)
+		{
+			var restaurant = await UnitOfWork.Restaurants.Get().SingleOrDefaultAsync(r => r.Name == name);
+
+			if (restaurant == null)
+			{
+				throw new NotFoundErrorException();
+			}
+
+			return restaurant.Id;
 		}
 	}
 }

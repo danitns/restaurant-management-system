@@ -15,17 +15,18 @@ public class ProductController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string restaurantName)
     {
-        var model = await Service.GetProducts();
+        var model = await Service.GetProducts(restaurantName);
 
         return View("Index", model);
     }
 
     [HttpGet]
-    public IActionResult CreateProduct()
+    public IActionResult CreateProduct(string restaurantName)
     {
         var model = new CreateProductModel();
+        model.RestaurantName = restaurantName;
 
         return View("CreateProduct", model);
     }
@@ -35,6 +36,6 @@ public class ProductController : BaseController
     {
         await Service.CreateProduct(model);
 
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Product", new { restaurantName = model.RestaurantName });
     }
 }

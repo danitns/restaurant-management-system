@@ -11,5 +11,9 @@ public partial class Table
 
     public int Seats { get; set; }
 
+    public Guid RestaurantId { get; set; }
+
     public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
+
+    public virtual Restaurant Restaurant { get; set; } = null!;
 }

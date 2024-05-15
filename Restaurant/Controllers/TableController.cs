@@ -20,9 +20,10 @@ namespace Restaurant.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult CreateTable()
+        public IActionResult CreateTable(string restaurantName)
         {
             var model = new TableModel();
+            model.RestaurantName = restaurantName;
 
             return View("CreateTable", model);
         }
@@ -31,7 +32,7 @@ namespace Restaurant.Web.Controllers
         public async Task<IActionResult> CreateTable(TableModel model)
         {
             await Service.CreateTable(model);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Restaurant", new {name = model.RestaurantName});
         }
     }
 }

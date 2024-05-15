@@ -19,9 +19,10 @@ namespace Restaurant.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(string restaurantName)
         {
             var model = new CreateReservationModel();
+            model.RestaurantName = restaurantName;
             return View("Create", model);
         }
 
@@ -33,9 +34,9 @@ namespace Restaurant.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<List<string>> GetAvailableHours(DateOnly date, int numberOfGuests)
+        public async Task<List<string>> GetAvailableHours(DateOnly date, int numberOfGuests, string restaurantName)
         {
-            var availableHours = await Service.GetAvailableHours(date, numberOfGuests);
+            var availableHours = await Service.GetAvailableHours(date, numberOfGuests, restaurantName);
             return availableHours;
         }
     }

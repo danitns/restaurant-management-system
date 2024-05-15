@@ -20,3 +20,8 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.card-img-top-container {
+    width: 100%;
+    height: auto;
+}

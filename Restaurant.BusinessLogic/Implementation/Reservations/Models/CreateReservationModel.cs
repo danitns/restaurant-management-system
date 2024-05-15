@@ -16,5 +16,6 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
         public DateOnly Date {  get; set; }
 
         public string Time { get; set; }
-    }
+		public string RestaurantName { get; set; }
+	}
 }

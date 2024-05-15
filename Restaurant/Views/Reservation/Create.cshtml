@@ -47,6 +47,7 @@
 				</select>
 				<span asp-validation-for="Time" class="text-danger"></span>
 			</div>
+			<input type="hidden" id="restaurantNameInput" asp-for="RestaurantName" value="@Model.RestaurantName" />
 			<div>
 				<button class="btn btn-primary" type="submit">Create</button>
 			</div>

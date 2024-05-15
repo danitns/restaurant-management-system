@@ -39,6 +39,7 @@ create table [City] (
 
 create table Restaurant (
 	Id uniqueidentifier primary key,
+	Picture varbinary(max),
 	[Name] nvarchar(255) not null,
 	[Address] nvarchar(255) not null,
 	CityId int not null,
@@ -78,6 +79,8 @@ create table [Table] (
 	Id uniqueidentifier primary key,
 	[Name] nvarchar(255) not null,
 	Seats int not null,
+	RestaurantId uniqueidentifier not null,
+	constraint FK_TABLE_RESTAURANT foreign key (RestaurantId) references Restaurant(Id),
 	constraint UQ_TABLE_NAME unique([Name])
 )
 
