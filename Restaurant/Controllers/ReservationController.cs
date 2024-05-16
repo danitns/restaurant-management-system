@@ -13,9 +13,10 @@ namespace Restaurant.Web.Controllers
             Service = service;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var reservations = await Service.GetReservations();
+            return View(reservations);
         }
 
         [HttpGet]

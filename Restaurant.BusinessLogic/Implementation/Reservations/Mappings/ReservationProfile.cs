@@ -16,6 +16,11 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations.Mappings
 				.ForMember(a => a.Id, a => a.MapFrom(s => Guid.NewGuid()))
 				.ForMember(a => a.Date, a => a.MapFrom(s => CombineDateTime(s.Date, s.Time)))
 				.ForMember(a => a.UserId, a => a.Ignore());
+
+			CreateMap<Reservation, ViewReservationModel>()
+				.ForMember(a => a.RestaurantName, a => a.MapFrom(s => s.Table.Restaurant.Name))
+				.ForMember(a => a.Address, a => a.MapFrom(s => s.Table.Restaurant.Address))
+				.ForMember(a => a.RestaurantPicture, a => a.MapFrom(s => s.Table.Restaurant.Picture));
         }
 
 		private DateTime CombineDateTime(DateOnly date, string timeAsString)

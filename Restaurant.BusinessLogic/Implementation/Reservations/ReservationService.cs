@@ -38,6 +38,18 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 			CreateReservationValidator = new CreateReservationValidator();
 		}
 
+		public async Task<List<ViewReservationModel>> GetReservations()
+		{
+			var reservations = await UnitOfWork.Reservations
+				.Get()
+				.Include(r => r.Table)
+				.ThenInclude(t => t.Restaurant)
+				.Where(r => r.UserId == CurrentUser.Id)
+				.ToListAsync();
+			var mappedReservations = Mapper.Map<List<Reservation>, List<ViewReservationModel>>(reservations);
+			return mappedReservations;
+		}
+
 		public async Task CreateReservation(CreateReservationModel model)
 		{
 			CreateReservationValidator.Validate(model).ThenThrow(model);
@@ -70,9 +82,9 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 			}
 
 			reservation.TableId = availableTable.Id;
-			if(CurrentUser.IsAuthenticated)
+			if (CurrentUser.IsAuthenticated)
 			{
-				reservation.UserId = CurrentUser.Id;	
+				reservation.UserId = CurrentUser.Id;
 			}
 
 			UnitOfWork.Reservations.Insert(reservation);
