@@ -37,4 +37,12 @@ public class ProductController : BaseController
 
         return RedirectToAction("Index", "Home");
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await Service.DeleteProduct(id);
+
+        return RedirectToAction("Index");
+    }
 }

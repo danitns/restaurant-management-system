@@ -9,6 +9,7 @@ namespace Restaurant.BusinessLogic.Implementation.Products.Models
 {
     public class ViewProductModel
     {
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
 
