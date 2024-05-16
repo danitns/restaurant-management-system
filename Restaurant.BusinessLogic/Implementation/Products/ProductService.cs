@@ -49,7 +49,7 @@ public class ProductService : BaseService
 
     public async Task DeleteProduct(Guid productId)
     {
-        var product = await UnitOfWork.Products.Get().FirstOrDefaultAsync(x => x.Id == productId);
+        var product = await UnitOfWork.Products.Get().SingleOrDefaultAsync(x => x.Id == productId);
         if (product == null)
         {
             throw new NotFoundErrorException("Product not found");
