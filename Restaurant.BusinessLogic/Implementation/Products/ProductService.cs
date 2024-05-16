@@ -2,6 +2,7 @@
 using Restaurant.BusinessLogic.Base;
 using Restaurant.BusinessLogic.Implementation.Products.Models;
 using Restaurant.BusinessLogic.Implementation.Products.Validations;
+using Restaurant.Common.Exceptions;
 using Restaurant.Common.Extensions;
 using Restaurant.Entities;
 using System;
@@ -44,5 +45,21 @@ public class ProductService : BaseService
     {
         var products = await UnitOfWork.Products.Get().ToListAsync();
         return Mapper.Map<IEnumerable<Product>, IEnumerable<ViewProductModel>>(products);
+    }
+
+    public async Task DeleteProduct(Guid productId)
+    {
+        var product = await UnitOfWork.Products.Get().SingleOrDefaultAsync(x => x.Id == productId);
+        if (product == null)
+        {
+            throw new NotFoundErrorException("Product not found");
+        }
+        else
+        {
+            UnitOfWork.Products.Delete(product);
+            await UnitOfWork.SaveChangesAsync();
+        }
+
+        
     }
 }
