@@ -51,4 +51,20 @@ public class ProductService : BaseService
             .ToListAsync();
         return Mapper.Map<IEnumerable<Product>, IEnumerable<ViewProductModel>>(products);
     }
+
+    public async Task DeleteProduct(Guid productId)
+    {
+        var product = await UnitOfWork.Products.Get().SingleOrDefaultAsync(x => x.Id == productId);
+        if (product == null)
+        {
+            throw new NotFoundErrorException("Product not found");
+        }
+        else
+        {
+            UnitOfWork.Products.Delete(product);
+            await UnitOfWork.SaveChangesAsync();
+        }
+
+        
+    }
 }

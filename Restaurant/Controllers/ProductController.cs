@@ -39,4 +39,12 @@ public class ProductController : BaseController
 
         return RedirectToAction("Index", "Product", new { Id = model.RestaurantId });
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await Service.DeleteProduct(id);
+
+        return RedirectToAction("Index");
+    }
 }
