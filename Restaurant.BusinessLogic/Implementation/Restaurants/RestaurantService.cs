@@ -42,9 +42,9 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
 			await UnitOfWork.SaveChangesAsync();
 		}
 
-        public async Task<ViewRestaurantModel> GetDetails(string name)
+        public async Task<ViewRestaurantModel> GetDetails(Guid id)
         {
-			var restaurant = await UnitOfWork.Restaurants.Get().SingleOrDefaultAsync(r => r.Name == name);
+			var restaurant = await UnitOfWork.Restaurants.Get().SingleOrDefaultAsync(r => r.Id == id);
 
 			if(restaurant == null)
 			{

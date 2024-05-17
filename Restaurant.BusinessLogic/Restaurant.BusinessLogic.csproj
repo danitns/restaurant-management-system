@@ -21,4 +21,9 @@
     <ProjectReference Include="..\Restaurant.DataAccess\Restaurant.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Implementation\Admin\Mappings\" />
+    <Folder Include="Implementation\Admin\Validations\" />
+  </ItemGroup>
+
 </Project>

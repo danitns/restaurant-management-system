@@ -13,5 +13,5 @@ public class CreateProductModel
     public int SubcategoryId { get; set; }
     public decimal Price { get; set; }
     public IFormFile? Picture { get; set; }
-    public string RestaurantName { get; set; }
+    public Guid RestaurantId { get; set; }
 }

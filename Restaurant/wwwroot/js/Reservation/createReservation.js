@@ -1,6 +1,6 @@
-const fetchSelectOptions = async (date, numberOfGuests, restaurantName) => {
+const fetchSelectOptions = async (date, numberOfGuests, restaurantId) => {
     try {
-        const response = await fetch(`/Reservation/GetAvailableHours?date=${date}&numberOfGuests=${numberOfGuests}&restaurantName=${restaurantName}`);
+        const response = await fetch(`/Reservation/GetAvailableHours?date=${date}&numberOfGuests=${numberOfGuests}&restaurantId=${restaurantId}`);
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -14,13 +14,13 @@ const populateSelect = async () => {
     const timeSelect = document.getElementById('timeSelect');
     const numberOfGuestsInput = document.getElementById('numberOfGuestsInput');
     const dateInput = document.getElementById('dateInput');
-    const restaurantNameInput = document.getElementById('restaurantNameInput');
+    const restaurantIdInput = document.getElementById('restaurantIdInput');
 
     const numberOfGuests = numberOfGuestsInput.value;
     const date = dateInput.value;
-    const restaurantName = restaurantNameInput.value;
+    const restaurantId = restaurantIdInput.value;
 
-    const timeOptions = await fetchSelectOptions(date, numberOfGuests, restaurantName);
+    const timeOptions = await fetchSelectOptions(date, numberOfGuests, restaurantId);
     if (timeOptions !== undefined) {
         timeSelect.innerHTML = '';
         timeOptions.forEach((timeOption) => {

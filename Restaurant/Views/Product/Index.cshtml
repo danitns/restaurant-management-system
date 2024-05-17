@@ -5,13 +5,12 @@
     
 @{
     ViewData["Title"] = "Products";
-    string queryParamValue = HttpContextAccessor.HttpContext.Request.Query["name"];
 }
 
 <h1 class="text-center">Our products</h1>
 
 <div>
-    <a class="btn btn-outline-dark" asp-action="CreateProduct" asp-controller="Product" asp-route-restaurantName="@queryParamValue">Create product</a>
+    <a class="btn btn-outline-dark" asp-action="CreateProduct" asp-controller="Product" asp-route-id="@ViewBag.RestaurantId">Create product</a>
 </div>
 
 @if (Model.Count() > 0)

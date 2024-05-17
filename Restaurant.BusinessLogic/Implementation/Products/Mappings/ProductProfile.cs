@@ -15,8 +15,7 @@ public class ProductProfile : Profile
     {
         CreateMap<CreateProductModel, Product>()
             .ForMember(a => a.Id, a => a.MapFrom(s => Guid.NewGuid()))
-            .ForMember(a => a.Picture, a => a.Ignore())
-            .ForMember(a => a.RestaurantId, a => a.Ignore());
+            .ForMember(a => a.Picture, a => a.Ignore());
 
         CreateMap<Product, ViewProductModel>();
     }

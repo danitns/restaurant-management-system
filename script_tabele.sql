@@ -72,7 +72,7 @@ create table Product (
 	Price money not null,
 	constraint FK_PRODUCT_SUBCATEGORY foreign key (SubcategoryId) references Subcategory(Id),
 	constraint FK_PRODUCT_RESTAURANT foreign key (RestaurantId) references Restaurant(Id),
-	constraint UQ_PRODUCT_NAME unique([Name])
+	constraint UQ_PRODUCT_NAME unique([Name], RestaurantId)
 )
 
 create table [Table] (
@@ -81,7 +81,7 @@ create table [Table] (
 	Seats int not null,
 	RestaurantId uniqueidentifier not null,
 	constraint FK_TABLE_RESTAURANT foreign key (RestaurantId) references Restaurant(Id),
-	constraint UQ_TABLE_NAME unique([Name])
+	constraint UQ_TABLE_NAME unique([Name], RestaurantId)
 )
 
 create table Reservation (
@@ -103,7 +103,8 @@ insert into City values
 insert into [Role] values
 (1, 'User'),
 (2, 'Manager'),
-(3, 'Admin')
+(3, 'Admin'),
+(4, 'PendingManager')
 
 insert into [Category] values
 (1, 'Drinks'),

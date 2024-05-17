@@ -33,9 +33,9 @@ namespace Restaurant.Web.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> Details(string name)
+		public async Task<IActionResult> Details(Guid Id)
 		{
-			var model = await Service.GetDetails(name);
+			var model = await Service.GetDetails(Id);
 			return View(model);
 		}
 	}

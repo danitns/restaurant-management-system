@@ -7,6 +7,7 @@ using Restaurant.Common.DTOs;
 using Restaurant.Web.Code.Base;
 using System.Security.Claims;
 using Restaurant.BusinessLogic.Implementation.Restaurants;
+using Restaurant.BusinessLogic.Implementation.Admin;
 
 namespace Restaurant.Web.Code.ExtensionMethods
 {
@@ -27,6 +28,7 @@ namespace Restaurant.Web.Code.ExtensionMethods
 			services.AddScoped<ProductService>();
 			services.AddScoped<ReservationService>();
             services.AddScoped<RestaurantService>();
+            services.AddScoped<AdminService>();
 			return services;
         }
 

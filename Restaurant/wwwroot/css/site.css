@@ -25,3 +25,10 @@ body {
     width: 100%;
     height: auto;
 }
+
+#toast-notification {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    z-index: 10000;
+}

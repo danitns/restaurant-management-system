@@ -16,10 +16,10 @@
 			</div>
 		</div>
 		<div class="col-8">
-			<a asp-action="Index" asp-controller="Product" asp-route-restaurantName="@Model.Name" class="btn btn-primary">View Menu</a>
-			<a asp-action="CreateTable" asp-controller="Table" asp-route-restaurantName="@Model.Name" class="btn btn-primary">Add Table</a>
-			<a asp-action="Index" asp-controller="Table" asp-route-restaurantName="@Model.Name" class="btn btn-primary">View Tables</a>
-			<a asp-action="Create" asp-controller="Reservation" asp-route-restaurantName="@Model.Name" class="btn btn-primary">Create Reservation</a>
+			<a asp-action="Index" asp-controller="Product" asp-route-id="@Model.Id" class="btn btn-primary">View Menu</a>
+			<a asp-action="CreateTable" asp-controller="Table" asp-route-id="@Model.Id" class="btn btn-primary">Add Table</a>
+			<a asp-action="Index" asp-controller="Table" asp-route-id="@Model.Id" class="btn btn-primary">View Tables</a>
+			<a asp-action="Create" asp-controller="Reservation" asp-route-id="@Model.Id" class="btn btn-primary">Create Reservation</a>
 		</div>
 	</div>
 </div>

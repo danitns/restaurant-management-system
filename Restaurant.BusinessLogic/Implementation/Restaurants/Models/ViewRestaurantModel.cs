@@ -8,6 +8,7 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
 {
     public class ViewRestaurantModel
     {
+        public Guid Id { get; set; }
         public string Name { get; set; } = null!;
 
         public byte[] Picture { get; set; } = null!;

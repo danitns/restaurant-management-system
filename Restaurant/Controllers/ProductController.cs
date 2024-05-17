@@ -15,18 +15,19 @@ public class ProductController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string restaurantName)
+    public async Task<IActionResult> Index(Guid Id)
     {
-        var model = await Service.GetProducts(restaurantName);
+        var model = await Service.GetProducts(Id);
+        ViewBag.RestaurantId = Id;
 
         return View("Index", model);
     }
 
     [HttpGet]
-    public IActionResult CreateProduct(string restaurantName)
+    public IActionResult CreateProduct(Guid Id)
     {
         var model = new CreateProductModel();
-        model.RestaurantName = restaurantName;
+        model.RestaurantId = Id;
 
         return View("CreateProduct", model);
     }
@@ -36,6 +37,6 @@ public class ProductController : BaseController
     {
         await Service.CreateProduct(model);
 
-        return RedirectToAction("Index", "Product", new { restaurantName = model.RestaurantName });
+        return RedirectToAction("Index", "Product", new { Id = model.RestaurantId });
     }
 }

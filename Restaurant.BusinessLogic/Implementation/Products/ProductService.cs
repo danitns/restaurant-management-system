@@ -37,39 +37,18 @@ public class ProductService : BaseService
                 product.Picture = fileBytes;
             }
         }
-
-        product.RestaurantId = await GetRestaurantIdByName(model.RestaurantName);
         
         UnitOfWork.Products.Insert(product);
         await UnitOfWork.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<ViewProductModel>> GetProducts(string name)
+    public async Task<IEnumerable<ViewProductModel>> GetProducts(Guid restaurantId)
     {
-        var restaurant = await UnitOfWork.Restaurants
-            .Get()
-            .FirstOrDefaultAsync(r => r.Name == name);
-        if(restaurant == null) 
-        {
-            throw new NotFoundErrorException();
-        }
         var products = await UnitOfWork.Products
             .Get()
             .Include(p => p.Restaurant)
-            .Where(p => p.Restaurant.Id == restaurant.Id)
+            .Where(p => p.Restaurant.Id == restaurantId)
             .ToListAsync();
         return Mapper.Map<IEnumerable<Product>, IEnumerable<ViewProductModel>>(products);
-    }
-
-    private async Task<Guid> GetRestaurantIdByName(string name)
-    {
-        var restaurant = await UnitOfWork.Restaurants.Get().SingleOrDefaultAsync(r => r.Name == name);
-
-        if (restaurant == null)
-        {
-            throw new NotFoundErrorException();
-        }
-
-        return restaurant.Id;
     }
 }

@@ -62,12 +62,10 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 				throw new FormatException();
 			}
 
-			var restaurantId = await GetRestaurantIdByName(model.RestaurantName);
-
 			var tables = await UnitOfWork.Tables
 				.Get()
 				.Include(t => t.Reservations)
-				.Where(t => t.Seats >= model.NumberOfGuests && t.RestaurantId == restaurantId)
+				.Where(t => t.Seats >= model.NumberOfGuests && t.RestaurantId == model.RestaurantId)
 				.OrderBy(t => t.Seats)
 				.ToListAsync();
 
@@ -91,9 +89,8 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 			await UnitOfWork.SaveChangesAsync();
 		}
 
-		public async Task<List<string>> GetAvailableHours(DateOnly date, int numberOfGuests, string restaurantName)
+		public async Task<List<string>> GetAvailableHours(DateOnly date, int numberOfGuests, Guid restaurantId)
 		{
-			var restaurantId = await GetRestaurantIdByName(restaurantName);
 
 			var tables = await UnitOfWork.Tables
 				.Get()
@@ -112,24 +109,15 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 						|| TimeOnly.FromDateTime(r.Date) == time.AddHours(-1))))
 					.Any();
 
+				if (isFree == true && date == DateOnly.FromDateTime(DateTime.Now) && time < TimeOnly.FromDateTime(DateTime.Now))
+					isFree = false;
+
 				if (isFree == true)
 				{
 					freeIntervals.Add(time.ToString());
 				}
 			}
 			return freeIntervals;
-		}
-
-		private async Task<Guid> GetRestaurantIdByName(string name)
-		{
-			var restaurant = await UnitOfWork.Restaurants.Get().SingleOrDefaultAsync(r => r.Name == name);
-
-			if (restaurant == null)
-			{
-				throw new NotFoundErrorException();
-			}
-
-			return restaurant.Id;
 		}
 	}
 }
