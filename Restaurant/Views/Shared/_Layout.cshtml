@@ -28,7 +28,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Products</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Restaurant" asp-action="Index">Restaurants</a>
                         </li>
                     </ul>
                 </div>
@@ -36,7 +36,7 @@
                     @if (CurrentUser.IsAuthenticated)
                     {
                         <div>
-                            <a asp-controller="User" asp-action="Details" class="nav-link"><i class="bi bi-person"></i>@CurrentUser.Name</a>
+                            <button class="nav-link" type="button" data-bs-toggle="modal" data-bs-target="#userDetailsModal"><i class="bi bi-person"></i>@CurrentUser.Name</button>
                         </div>
                         <div>
                             <a asp-controller="User" asp-action="Logout" class="nav-link"><i class="bi bi-door-open"></i>Log out</a>
@@ -61,6 +61,7 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @await Html.PartialAsync("../User/Details.cshtml")
             @RenderBody()
         </main>
     </div>

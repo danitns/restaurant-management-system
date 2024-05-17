@@ -16,15 +16,15 @@ public partial class RestaurantContext : DbContext
     {
     }
 
-    public virtual DbSet<Bill> Bills { get; set; }
-
-    public virtual DbSet<BillProduct> BillProducts { get; set; }
-
     public virtual DbSet<Category> Categories { get; set; }
+
+    public virtual DbSet<City> Cities { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
 
     public virtual DbSet<Reservation> Reservations { get; set; }
+
+    public virtual DbSet<Entities.Restaurant> Restaurants { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
 
@@ -40,40 +40,9 @@ public partial class RestaurantContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Bill>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Bill__3214EC07FED22AA6");
-
-            entity.ToTable("Bill");
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-
-            entity.HasOne(d => d.IdNavigation).WithOne(p => p.Bill)
-                .HasForeignKey<Bill>(d => d.Id)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_BILL_RESERVATION");
-        });
-
-        modelBuilder.Entity<BillProduct>(entity =>
-        {
-            entity.HasKey(e => new { e.BillId, e.ProductId }).HasName("PK_BILL_PRODUCT");
-
-            entity.ToTable("Bill_Product");
-
-            entity.HasOne(d => d.Bill).WithMany(p => p.BillProducts)
-                .HasForeignKey(d => d.BillId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_BILL_PRODUCT_BILL");
-
-            entity.HasOne(d => d.Product).WithMany(p => p.BillProducts)
-                .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_BILL_PRODUCT_PRODUCT");
-        });
-
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC0755C0E9CD");
+            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC0714FD95C0");
 
             entity.ToTable("Category");
 
@@ -83,9 +52,21 @@ public partial class RestaurantContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(255);
         });
 
+        modelBuilder.Entity<City>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__City__3214EC072EB278F3");
+
+            entity.ToTable("City");
+
+            entity.HasIndex(e => e.Name, "UQ_CITY_NAME").IsUnique();
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(255);
+        });
+
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Product__3214EC07AEC55DA6");
+            entity.HasKey(e => e.Id).HasName("PK__Product__3214EC076A1E3623");
 
             entity.ToTable("Product");
 
@@ -95,6 +76,11 @@ public partial class RestaurantContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Price).HasColumnType("money");
 
+            entity.HasOne(d => d.Restaurant).WithMany(p => p.Products)
+                .HasForeignKey(d => d.RestaurantId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_PRODUCT_RESTAURANT");
+
             entity.HasOne(d => d.Subcategory).WithMany(p => p.Products)
                 .HasForeignKey(d => d.SubcategoryId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -103,7 +89,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Reservation>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC076362D8F7");
+            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC07D6C81458");
 
             entity.ToTable("Reservation");
 
@@ -120,9 +106,32 @@ public partial class RestaurantContext : DbContext
                 .HasConstraintName("FK_RESERVATION_USER");
         });
 
+        modelBuilder.Entity<Entities.Restaurant>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC079FA58BF4");
+
+            entity.ToTable("Restaurant");
+
+            entity.HasIndex(e => e.Name, "UQ_RESTAURANT_NAME").IsUnique();
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Address).HasMaxLength(255);
+            entity.Property(e => e.Name).HasMaxLength(255);
+
+            entity.HasOne(d => d.City).WithMany(p => p.Restaurants)
+                .HasForeignKey(d => d.CityId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RESTAURANT_CITY");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Restaurants)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RESTAURANT_USER");
+        });
+
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC07193FDC6D");
+            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC07F2A92416");
 
             entity.ToTable("Role");
 
@@ -134,7 +143,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Subcategory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Subcateg__3214EC07EAC5CBD1");
+            entity.HasKey(e => e.Id).HasName("PK__Subcateg__3214EC07E3A0CF38");
 
             entity.ToTable("Subcategory");
 
@@ -151,7 +160,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Table>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Table__3214EC079C13F482");
+            entity.HasKey(e => e.Id).HasName("PK__Table__3214EC07E5B64415");
 
             entity.ToTable("Table");
 
@@ -159,11 +168,16 @@ public partial class RestaurantContext : DbContext
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(255);
+
+            entity.HasOne(d => d.Restaurant).WithMany(p => p.Tables)
+                .HasForeignKey(d => d.RestaurantId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_TABLE_RESTAURANT");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__User__3214EC07CCC8EA34");
+            entity.HasKey(e => e.Id).HasName("PK__User__3214EC0705008BB1");
 
             entity.ToTable("User");
 

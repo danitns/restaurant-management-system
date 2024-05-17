@@ -14,6 +14,7 @@ namespace Restaurant.Web.Code.Utils
                 new Claim(ClaimTypes.Name, $"{user.Name}"),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.MobilePhone, user.Phone)
             };
 
             var identity = new ClaimsIdentity(claims, "Cookies");

@@ -10,5 +10,6 @@ namespace Restaurant.BusinessLogic.Implementation.Tables.Models
     {
         public string Name { get; set; }
         public int Seats { get; set; }
+        public Guid RestaurantId { get; set; }
     }
 }

@@ -1,6 +1,8 @@
-﻿using Restaurant.BusinessLogic.Base;
+﻿using Microsoft.EntityFrameworkCore;
+using Restaurant.BusinessLogic.Base;
 using Restaurant.BusinessLogic.Implementation.Tables.Models;
 using Restaurant.BusinessLogic.Implementation.Tables.Validations;
+using Restaurant.Common.Exceptions;
 using Restaurant.Common.Extensions;
 using Restaurant.Entities;
 using System;
@@ -25,9 +27,7 @@ namespace Restaurant.BusinessLogic.Implementation.Tables
             var table = Mapper.Map<TableModel, Table>(model);
 
             UnitOfWork.Tables.Insert(table);
-            UnitOfWork.SaveChanges();
-
-
+            await UnitOfWork.SaveChangesAsync();
         }
     }
 }

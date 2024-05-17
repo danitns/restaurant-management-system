@@ -1,0 +1,36 @@
+﻿@inject Restaurant.Common.DTOs.CurrentUserDTO CurrentUser
+@using Restaurant.Entities.Enums
+
+<script src="~/js/utils/createToast.js" type="text/javascript" defer></script>
+<script src="~/js/User/becomeManager.js" type="text/javascript" defer></script>
+
+<div class="modal fade" id="userDetailsModal" tabindex="-1" aria-labelledby="userDetailsModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="userDetailsModalLabel">Your Profile</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+			</div>
+			<div class="modal-body">
+				<p>
+					Name: @CurrentUser.Name
+				</p>
+				<p>Email: @CurrentUser.Email</p>
+				<p>Phone number: @CurrentUser.Phone</p>
+				@if (CurrentUser.Role == RoleTypes.User.ToString())
+				{
+					<div class="alert alert-primary" id="become-manager-div">
+						<h6>You can add your own restaurants. Apply now!</h6>
+						<button class="btn btn-primary" onclick="updateRole()">Become a manager</button>
+					</div>
+					<div id="toast-notification"></div>
+
+				}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+

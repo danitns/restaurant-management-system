@@ -70,5 +70,11 @@ namespace Restaurant.Web.Controllers
 
             return RedirectToAction("Index", "Home");
         }
+
+        public async Task<IActionResult> BecomeManager()
+        {
+            await Service.BecomeManager();
+            return Ok(new { success = true });
+        }
     }
 }

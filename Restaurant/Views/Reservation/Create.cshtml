@@ -1,0 +1,69 @@
+﻿@model Restaurant.BusinessLogic.Implementation.Reservations.CreateReservationModel
+@using Restaurant.Common.DTOs
+
+@inject CurrentUserDTO CurrentUser
+
+@{
+	ViewData["Title"] = "Reservation";
+}
+
+<h1>Create Reservation</h1>
+
+<div class="row">
+	<div class="col-md-4 ml-auto mr-auto">
+		<form asp-action="Create" enctype="multipart/form-data">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="NumberOfGuests" class="control-label">Number of guests:</label>
+				<input asp-for="NumberOfGuests" type="number" class="form-control" id="numberOfGuestsInput" />
+				<span asp-validation-for="NumberOfGuests" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Date" class="control-label">Date: </label>
+				<input asp-for="Date" type="date" class="form-control" id="dateInput" />
+				<span asp-validation-for="Date" class="text-danger"></span>
+			</div>
+
+			<div class="form-group">
+				<label asp-for="Phone" class="control-label"></label>
+				@if (CurrentUser.IsAuthenticated)
+				{
+					<input asp-for="Phone" value="@CurrentUser.Phone" readonly class="form-control" />
+				}
+				else
+				{
+					<input asp-for="Phone" class="form-control" />
+				}
+				<span asp-validation-for="Phone" class="text-danger"></span>
+			</div>
+
+			<div>
+				<button class="btn btn-primary" id="findButton" type="button">Find</button>
+			</div>
+			<div class="form-group">
+				<label asp-for="Time" class="control-label">Time: </label>
+				<select asp-for="Time" id="timeSelect" class="form-control">
+					<option value="">Please select</option>
+				</select>
+				<span asp-validation-for="Time" class="text-danger"></span>
+			</div>
+			<input type="hidden" id="restaurantIdInput" asp-for="RestaurantId" value="@Model.RestaurantId" />
+			<div>
+				<button class="btn btn-primary" type="submit">Create</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div>
+	<a asp-action="Index" asp-controller="Home">Back to Home Page</a>
+</div>
+
+<script type="text/javascript" src="~/js/Reservation/createReservation.js" defer />
+
+	@section Scripts {
+		@{
+			await Html.RenderPartialAsync("_ValidationScriptsPartial");
+		}
+	}
+

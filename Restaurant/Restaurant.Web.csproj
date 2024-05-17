@@ -21,4 +21,9 @@
     <ProjectReference Include="..\Restaurant.Common\Restaurant.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\js\User\" />
+    <Folder Include="wwwroot\js\Reservation\" />
+  </ItemGroup>
+
 </Project>

@@ -20,6 +20,7 @@
                 <input asp-for="Seats" class="form-control" />
                 <span asp-validation-for="Seats" class="text-danger"></span>
             </div>
+            <input type="hidden" asp-for="RestaurantId" value="@Model.RestaurantId" />
             <div class="form-group">
                 <input type="submit" value="Add Table" class="btn btn-primary" />
             </div>

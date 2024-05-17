@@ -18,6 +18,8 @@ namespace Restaurant.BusinessLogic.Implementation.Users
                 .ForMember(a => a.RoleId, a => a.MapFrom(s => ((int)RoleTypes.User)))
                 .ForMember(a => a.PasswordHash, a => a.MapFrom(s => Guid.NewGuid()))
                 .ForMember(a => a.Birthdate, a => a.MapFrom(s => s.Birthdate));
+
+            CreateMap<User, DetailsUserModel>();
         }
     }
 }

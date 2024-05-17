@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Restaurant.BusinessLogic.Base;
 using Restaurant.BusinessLogic.Implementation.Products.Models;
 using Restaurant.BusinessLogic.Implementation.Products.Validations;
@@ -36,14 +37,18 @@ public class ProductService : BaseService
                 product.Picture = fileBytes;
             }
         }
-
+        
         UnitOfWork.Products.Insert(product);
         await UnitOfWork.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<ViewProductModel>> GetProducts()
+    public async Task<IEnumerable<ViewProductModel>> GetProducts(Guid restaurantId)
     {
-        var products = await UnitOfWork.Products.Get().ToListAsync();
+        var products = await UnitOfWork.Products
+            .Get()
+            .Include(p => p.Restaurant)
+            .Where(p => p.Restaurant.Id == restaurantId)
+            .ToListAsync();
         return Mapper.Map<IEnumerable<Product>, IEnumerable<ViewProductModel>>(products);
     }
 

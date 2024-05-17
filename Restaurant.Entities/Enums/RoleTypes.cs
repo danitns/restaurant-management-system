@@ -9,7 +9,8 @@ namespace Restaurant.Entities.Enums
     public enum RoleTypes
     {
         User = 1,
-        Waiter = 2,
+        Manager = 2,
         Admin = 3,
+        PendingManager = 4,
     }
 }

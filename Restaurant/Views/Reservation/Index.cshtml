@@ -1,0 +1,77 @@
+﻿@model IEnumerable<Restaurant.BusinessLogic.Implementation.Reservations.ViewReservationModel>
+
+@{
+	ViewData["Title"] = "Reservation";
+}
+
+<h1>Your Reservations</h1>
+
+<div class="container">
+	<div>
+		<h2>Upcoming reservations</h2>
+		<br />
+		@if (Model.Where(r => r.Date > DateTime.Now).Any())
+		{
+			foreach (var reservation in @Model)
+			{
+				<div class="row">
+					<div class="col-3">
+						<img class="card-img-top-container" src="data:image/png;base64,@Convert.ToBase64String(reservation.RestaurantPicture)" />
+					</div>
+					<div class="col-9">
+						<div class="row">
+							@reservation.RestaurantName
+						</div>
+						<div class="row">
+							@reservation.Address
+						</div>
+						<div class="row">
+							@reservation.Date
+						</div>
+					</div>
+				</div>
+			}
+		}
+		else
+		{
+			<p>You have no upcoming reservations. Go to <a asp-action="Index" asp-controller="Restaurant">restaurants</a></p>
+		}
+	</div>
+	<div>
+		<h2>Past reservations</h2>
+		<br />
+		@if (Model.Where(r => r.Date <= DateTime.Now).Any())
+		{
+			foreach (var reservation in @Model)
+			{
+				<div class="row">
+					<div class="col-3">
+						<img class="card-img-top-container" src="data:image/png;base64,@Convert.ToBase64String(reservation.RestaurantPicture)" />
+					</div>
+					<div class="col-9">
+						<div class="row">
+							@reservation.RestaurantName
+						</div>
+						<div class="row">
+							@reservation.Address
+						</div>
+						<div class="row">
+							@reservation.Date
+						</div>
+					</div>
+				</div>
+			}
+		}
+		else
+		{
+			<p>You have no upcoming reservations. Go to <a asp-action="Index" asp-controller="Restaurant">restaurants</a></p>
+		}
+	</div>
+</div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}
+

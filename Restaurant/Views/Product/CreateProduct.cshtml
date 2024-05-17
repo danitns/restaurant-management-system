@@ -18,7 +18,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="SubcategoryId" class="control-label">Subcategory</label>
-                <select asp-for="SubcategoryId" asp-items="Html.GetEnumSelectList<SubcategoryTypes>()"></select>
+                <select asp-for="SubcategoryId" asp-items="Html.GetEnumSelectList<SubcategoryTypes>()" class="form-control"></select>
                 <span asp-validation-for="SubcategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -28,9 +28,10 @@
             </div>
             <div class="form-group">
                 <label asp-for="Picture" class="control-label">Picture</label>
-                <input type="file" asp-for="Picture" class="form-control-file" accept="image/*" />
+                <input type="file" asp-for="Picture" class="form-control" accept="image/*" />
                 <span asp-validation-for="Picture" class="text-danger"></span>
             </div>
+            <input type="hidden" asp-for="RestaurantId" value="@Model.RestaurantId" />
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

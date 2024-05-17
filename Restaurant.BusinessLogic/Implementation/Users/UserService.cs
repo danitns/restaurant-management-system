@@ -9,6 +9,7 @@ using Restaurant.Entities.Enums;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Table = Restaurant.Entities.Table;
 using Restaurant.BusinessLogic.Implementation.Tables.Models;
+using Restaurant.Common.Exceptions;
 
 namespace Restaurant.BusinessLogic.Implementation.Users
 {
@@ -58,6 +59,7 @@ namespace Restaurant.BusinessLogic.Implementation.Users
                     Name = $"{user.FirstName} {user.LastName}",
                     IsAuthenticated = true,
                     Role = Enum.GetName(typeof(RoleTypes), user.RoleId),
+                    Phone = user.Phone,
                 };
 
                 return currentUser;
@@ -76,5 +78,18 @@ namespace Restaurant.BusinessLogic.Implementation.Users
             return hashedPasswordToString;
         }
 
-    }
+		public async Task BecomeManager()
+		{
+            var manager = await UnitOfWork.Users
+                .Get()
+                .SingleOrDefaultAsync(u => u.Id == CurrentUser.Id);
+
+            if (manager == null || manager.RoleId != (int)RoleTypes.User)
+                throw new NotFoundErrorException();
+
+            manager.RoleId = (int)RoleTypes.PendingManager;
+            UnitOfWork.Users.Update(manager);
+            await UnitOfWork.SaveChangesAsync();
+		}
+	}
 }
