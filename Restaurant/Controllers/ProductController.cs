@@ -41,10 +41,10 @@ public class ProductController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(Guid id, Guid restaurantId)
     {
         await Service.DeleteProduct(id);
 
-        return RedirectToAction("Index");
+        return RedirectToAction("Index", new {Id = restaurantId});
     }
 }
