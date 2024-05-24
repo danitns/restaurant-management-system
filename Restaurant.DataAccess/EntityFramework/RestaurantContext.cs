@@ -26,6 +26,10 @@ public partial class RestaurantContext : DbContext
 
     public virtual DbSet<Entities.Restaurant> Restaurants { get; set; }
 
+    public virtual DbSet<RestaurantSchedule> RestaurantSchedules { get; set; }
+
+    public virtual DbSet<RestaurantType> RestaurantTypes { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<Subcategory> Subcategories { get; set; }
@@ -42,7 +46,7 @@ public partial class RestaurantContext : DbContext
     {
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC0714FD95C0");
+            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC07168FE898");
 
             entity.ToTable("Category");
 
@@ -54,7 +58,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<City>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__City__3214EC072EB278F3");
+            entity.HasKey(e => e.Id).HasName("PK__City__3214EC076737D666");
 
             entity.ToTable("City");
 
@@ -66,11 +70,11 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Product__3214EC076A1E3623");
+            entity.HasKey(e => e.Id).HasName("PK__Product__3214EC079DB182DB");
 
             entity.ToTable("Product");
 
-            entity.HasIndex(e => e.Name, "UQ_PRODUCT_NAME").IsUnique();
+            entity.HasIndex(e => new { e.Name, e.RestaurantId }, "UQ_PRODUCT_NAME").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(255);
@@ -89,7 +93,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Reservation>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC07D6C81458");
+            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC079720C6EC");
 
             entity.ToTable("Reservation");
 
@@ -108,7 +112,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Entities.Restaurant>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC079FA58BF4");
+            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC070AC1B699");
 
             entity.ToTable("Restaurant");
 
@@ -123,15 +127,48 @@ public partial class RestaurantContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RESTAURANT_CITY");
 
+            entity.HasOne(d => d.RestaurantType).WithMany(p => p.Restaurants)
+                .HasForeignKey(d => d.RestaurantTypeId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RESTAURANT_RESTAURANT_TYPE");
+
             entity.HasOne(d => d.User).WithMany(p => p.Restaurants)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RESTAURANT_USER");
         });
 
+        modelBuilder.Entity<RestaurantSchedule>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC07E9102985");
+
+            entity.ToTable("RestaurantSchedule");
+
+            entity.HasIndex(e => new { e.RestaurantId, e.DayOfWeek }, "UQ_RESTAURANTSCHEDULE_UNIQUE").IsUnique();
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.Restaurant).WithMany(p => p.RestaurantSchedules)
+                .HasForeignKey(d => d.RestaurantId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RESTAURANTSCHEDULE_RESTAURANT");
+        });
+
+        modelBuilder.Entity<RestaurantType>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC075327602D");
+
+            entity.ToTable("RestaurantType");
+
+            entity.HasIndex(e => e.Name, "UQ_RESTAURANT_TYPE_NAME").IsUnique();
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Name).HasMaxLength(255);
+        });
+
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC07F2A92416");
+            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC07401BBD05");
 
             entity.ToTable("Role");
 
@@ -143,7 +180,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Subcategory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Subcateg__3214EC07E3A0CF38");
+            entity.HasKey(e => e.Id).HasName("PK__Subcateg__3214EC07A8B792D1");
 
             entity.ToTable("Subcategory");
 
@@ -160,11 +197,11 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Table>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Table__3214EC07E5B64415");
+            entity.HasKey(e => e.Id).HasName("PK__Table__3214EC072B4B955A");
 
             entity.ToTable("Table");
 
-            entity.HasIndex(e => e.Name, "UQ_TABLE_NAME").IsUnique();
+            entity.HasIndex(e => new { e.Name, e.RestaurantId }, "UQ_TABLE_NAME").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
             entity.Property(e => e.Name).HasMaxLength(255);
@@ -177,7 +214,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__User__3214EC0705008BB1");
+            entity.HasKey(e => e.Id).HasName("PK__User__3214EC07DF79E36E");
 
             entity.ToTable("User");
 

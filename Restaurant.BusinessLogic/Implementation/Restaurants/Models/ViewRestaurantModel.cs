@@ -16,5 +16,7 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
         public string Address { get; set; } = null!;
 
         public string CityName { get; set; }
+
+        public string TypeName {  get; set; }
     }
 }

@@ -14,8 +14,14 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
 
 		public IFormFile Picture { get; set; } = null!;
 
+		public string Description { get; set; } = null!;
+
+		public string RestaurantTypeId { get; set; } = null!;
+
 		public string Address { get; set; } = null!;
 
 		public int CityId { get; set; }
+
+		public RestaurantScheduleModel[] Schedules { get; set; } = new RestaurantScheduleModel[7];
 	}
 }

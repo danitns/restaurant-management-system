@@ -14,10 +14,14 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
 {
 	public class RestaurantService : BaseService
 	{
+		static private FilterRestaurantModel FilterModel;
+
 		private readonly CreateRestaurantValidator CreateRestaurantValidator;
 		public RestaurantService(ServiceDependencies serviceDependencies) : base(serviceDependencies)
 		{
 			CreateRestaurantValidator = new CreateRestaurantValidator();
+			if(FilterModel == null)
+				FilterModel = new FilterRestaurantModel();
 		}
 
 		public async Task CreateRestaurant(CreateRestaurantModel model)
@@ -27,6 +31,11 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
 			var restaurant = Mapper.Map<CreateRestaurantModel, Entities.Restaurant>(model);
 
 			restaurant.UserId = CurrentUser.Id;
+
+			foreach(var schedule in restaurant.RestaurantSchedules)
+			{
+				schedule.RestaurantId = restaurant.Id;
+			}
 
             if (model.Picture != null)
             {
@@ -54,10 +63,75 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
 			return Mapper.Map<Entities.Restaurant, ViewRestaurantModel>(restaurant);
         }
 
-        public List<ViewRestaurantModel> GetRestaurants()
+        public object GetFiltersAndCurrentPage()
+        {
+			return FilterModel;
+        }
+
+        public async Task<List<ViewRestaurantModel>> GetRestaurants(FilterRestaurantModel? filterModel)
 		{
-			var restaurants = UnitOfWork.Restaurants.Get().ToList().Select(r => Mapper.Map<Entities.Restaurant, ViewRestaurantModel>(r)).ToList();
-			return restaurants;
+			var restaurantsQuery = UnitOfWork.Restaurants
+				.Get();
+
+			if(filterModel != null)
+			{
+				if(filterModel.CityId.HasValue)
+				{
+					FilterModel.CityId = filterModel.CityId.Value;
+				}
+
+				if(filterModel.TypeId.HasValue)
+				{
+					FilterModel.TypeId = filterModel.TypeId.Value;
+				}
+
+				if(filterModel.CurrentPage != 0 && filterModel.CurrentPage != 1 && filterModel.CurrentPage != -1)
+				{
+					FilterModel.CurrentPage = 1;
+				}
+				else
+				{
+					FilterModel.CurrentPage += filterModel.CurrentPage;
+				}
+			}
+
+			if(FilterModel.CityId != 0)
+			{
+				restaurantsQuery = restaurantsQuery.Where(e => e.CityId == FilterModel.CityId);
+			}
+
+            if (FilterModel.TypeId != 0)
+            {
+                restaurantsQuery = restaurantsQuery.Where(e => e.RestaurantTypeId == FilterModel.TypeId);
+            }
+
+			if(FilterModel.CurrentPage < 1)
+			{
+				FilterModel.CurrentPage = 1;
+			}
+
+			var numberOfRestaurants = restaurantsQuery.Count();
+
+			var elementsToSkip = (FilterModel.CurrentPage - 1) * FilterModel.ItemsOnPage;
+
+			if(numberOfRestaurants != 0 && elementsToSkip > numberOfRestaurants)
+			{
+				FilterModel.CurrentPage--;
+                elementsToSkip = (FilterModel.CurrentPage - 1) * FilterModel.ItemsOnPage;
+            }
+
+			var restaurants = await restaurantsQuery
+				.Skip(elementsToSkip)
+				.Take(FilterModel.ItemsOnPage)
+				.Select(t => Mapper.Map<Entities.Restaurant, ViewRestaurantModel>(t))
+				.ToListAsync();
+
+			if(restaurants == null)
+			{
+				throw new NotFoundErrorException();
+			}
+
+            return restaurants;
 		}
 
 	}
