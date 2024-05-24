@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using Restaurant.BusinessLogic.Implementation.Restaurants;	
+using Restaurant.BusinessLogic.Implementation.Restaurants;
+using Restaurant.Entities;
 using Restaurant.Entities.Enums;
 using System;
 using System.Collections.Generic;
@@ -13,13 +14,19 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants.Mappings
 	{
 		public RestaurantProfile() 
 		{
+			CreateMap<RestaurantScheduleModel, RestaurantSchedule>()
+				.ForMember(d => d.Id, d => d.MapFrom(s => Guid.NewGuid()))
+				.ForMember(d => d.RestaurantId, d => d.Ignore());
+
 			CreateMap<CreateRestaurantModel, Entities.Restaurant>()
 				.ForMember(d => d.Id, d => d.MapFrom(s => Guid.NewGuid()))
+				.ForMember(d => d.RestaurantSchedules, d => d.MapFrom(s => s.Schedules))
 				.ForMember(d => d.UserId, d => d.Ignore())
 				.ForMember(d => d.Picture, d => d.Ignore());
 
 			CreateMap<Entities.Restaurant, ViewRestaurantModel>()
-				.ForMember(d => d.CityName, d => d.MapFrom(s => Enum.GetName(typeof(Cities), s.CityId)));
+				.ForMember(d => d.CityName, d => d.MapFrom(s => Enum.GetName(typeof(Cities), s.CityId)))
+                .ForMember(d => d.TypeName, d => d.MapFrom(s => Enum.GetName(typeof(RestaurantTypeEnum), s.RestaurantTypeId)));
 		}
 	}
 }

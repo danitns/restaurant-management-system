@@ -6,6 +6,7 @@ drop table if exists Product;
 drop table if exists Subcategory;
 drop table if exists Category;
 drop table if exists Restaurant;
+drop table if exists RestaurantType;
 drop table if exists City;
 drop table if exists [User];
 drop table if exists [Role];
@@ -37,17 +38,36 @@ create table [City] (
 	constraint UQ_CITY_NAME unique([Name])
 )
 
+create table RestaurantType (
+	Id int primary key,
+	[Name] nvarchar(255) not null,
+	constraint UQ_RESTAURANT_TYPE_NAME unique([Name])
+)
+
 create table Restaurant (
 	Id uniqueidentifier primary key,
 	Picture varbinary(max),
 	[Name] nvarchar(255) not null,
 	[Address] nvarchar(255) not null,
+	[Description] nvarchar(max) not null,
+	RestaurantTypeId int not null,
 	CityId int not null,
 	UserId uniqueidentifier not null,
 	constraint FK_RESTAURANT_CITY foreign key(CityId) references City(Id),
 	constraint FK_RESTAURANT_USER foreign key (UserId) references [User](Id),
+	constraint FK_RESTAURANT_RESTAURANT_TYPE foreign key(RestaurantTypeId) references RestaurantType(Id),
 	constraint UQ_RESTAURANT_NAME unique([Name])
 )
+
+create table RestaurantSchedule (
+    Id uniqueidentifier PRIMARY KEY,
+    RestaurantId uniqueidentifier NOT NULL,
+    DayOfWeek int NOT NULL,
+    OpeningTime time NOT NULL,
+    ClosingTime time NOT NULL,
+    CONSTRAINT FK_RESTAURANTSCHEDULE_RESTAURANT FOREIGN KEY (RestaurantId) REFERENCES Restaurant(Id),
+    CONSTRAINT UQ_RESTAURANTSCHEDULE_UNIQUE UNIQUE (RestaurantId, DayOfWeek)
+);
 
 create table Category (
 	Id int primary key,
@@ -125,3 +145,10 @@ insert into [Subcategory] values
 (12, 2, 'Breakfast'),
 (13, 2, 'Side'),
 (14, 2, 'Main Course')
+
+insert into RestaurantType values
+(1, 'Restaurant'),
+(2, 'Bar'),
+(3, 'Pub'),
+(4, 'CoffeeShop'),
+(5, 'Bistro')

@@ -12,9 +12,9 @@ namespace Restaurant.Web.Controllers
 			Service = service;
 		}
 
-		public IActionResult Index()
+		public async Task<IActionResult> Index(FilterRestaurantModel filterModel = null)
 		{
-			var restaurants = Service.GetRestaurants();
+			var restaurants = await Service.GetRestaurants(filterModel);
 			return View(restaurants);
 		}
 
@@ -22,6 +22,10 @@ namespace Restaurant.Web.Controllers
 		public IActionResult Create()
 		{
 			var model = new CreateRestaurantModel();
+			for(int i = 0; i < 7; i++)
+			{
+				model.Schedules[i] = new RestaurantScheduleModel();
+			}
 			return View(model);
 		}
 
@@ -38,5 +42,12 @@ namespace Restaurant.Web.Controllers
 			var model = await Service.GetDetails(Id);
 			return View(model);
 		}
-	}
+
+        [HttpGet("get-filters")]
+        public IActionResult GetFiltersAndCurrentPage()
+        {
+            var filtersAndPagination = Service.GetFiltersAndCurrentPage();
+            return Ok(filtersAndPagination);
+        }
+    }
 }

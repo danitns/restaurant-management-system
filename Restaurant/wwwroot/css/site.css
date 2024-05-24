@@ -32,3 +32,14 @@ body {
     left: 10px;
     z-index: 10000;
 }
+
+.restaurant-card {
+    height: 210px;
+    margin: 1% 0 1% 0;
+}
+
+.restaurant-card-img {
+    height: 100%;
+    width: 100%;
+    object-fit: fill;
+}

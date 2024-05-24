@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Restaurant.BusinessLogic.Implementation.Restaurants.ViewRestaurantModel>
+﻿@using Restaurant.Entities.Enums
+@model IEnumerable<Restaurant.BusinessLogic.Implementation.Restaurants.ViewRestaurantModel>
 
 @{
     ViewData["Title"] = "Restaurants";
@@ -6,37 +7,107 @@
 
 <h1 class="text-center">Restaurants</h1>
 
-<div>
-    <a class="btn btn-outline-dark" asp-action="Create" asp-controller="Restaurant">Create restaurant</a>
-</div>
 
-@if (Model.Count() > 0)
-{
-    <div class="container">
-        <div class="row">
-            @foreach (var restaurant in Model)
-            {
-                <div class="col-4">
-                    <img class="card-img-top-container" src="data:image/png;base64,@Convert.ToBase64String(restaurant.Picture)" alt="" />
-                    <div class="card-body">
-                        <h5 class="card-title">@restaurant.Name</h5>
-                        <p class="card-text">@restaurant.CityName</p>
-                        <p class="card-text">@restaurant.Address</p>
-                        <a asp-action="Details" asp-route-id="@restaurant.Id">Details</a>
-                    </div>
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <div class="row">
+                <div>
+                    <a class="btn btn-outline-dark" asp-action="Create" asp-controller="Restaurant">Add</a>
                 </div>
+                <h5>Filters:</h5>
+                <label>
+                    Type:
+                    <select asp-items="Html.GetEnumSelectList<RestaurantTypeEnum>()" name="TypeId" id="typeIdSelect" class="form-select"></select>
+                </label>
+                <label>
+                    City:
+                    <select asp-items="Html.GetEnumSelectList<Cities>()" name="CityId" id="cityIdSelect" class="form-select"></select>
+                </label>
+                <div class="col-6">
+                    <a class="btn btn-primary" type="button" id="filterButton">Filter</a>
+                </div>
+                <input type="hidden" name="CurrentPage" id="pageControl" value="0" />
+            </div>
+
+        </div>
+        <div class="col-9">
+            @if (Model.Count() > 0)
+            {
+                @foreach (var restaurant in Model)
+                {
+                    <div class="row restaurant-card">
+                        <div class="col-3 h-100 p-0">
+                            <img class="restaurant-card-img" src="data:image/png;base64,@Convert.ToBase64String(restaurant.Picture)" alt="" />
+                        </div>
+                        <div class="col-9">
+                            <h4>@restaurant.Name</h4>
+                            <p>@restaurant.CityName</p>
+                            <p>@restaurant.Address</p>
+                            <p>@restaurant.TypeName</p>
+                            <a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@restaurant.Id">Details</a>
+                        </div>
+
+                    </div>
+                }
+            }
+            else
+            {
+            <div>
+                <h3>There are no restaurants to display.</h3>
+            </div>
             }
         </div>
     </div>
-}
-else
-{
+
+</div>
+
+
+<div class="d-flex flex-row justify-content-center">
     <div>
-        <h3>There are no restaurants to display.</h3>
+        <button id="previousPageButton" class="btn btn-outline-primary" type="button"><i class="bi bi-arrow-left"></i></button>
     </div>
-}
+    <div>
+        <div id="currentPage" class="p-1"></div>
+    </div>
+    <div>
+        @if(Model.Count() < 6)
+        {
+            <button id="nextPageButton" class="btn btn-outline-primary" disabled type="button"><i class="bi bi-arrow-right"></i></button>
+        }
+        else
+        {
+            <button id="nextPageButton" class="btn btn-outline-primary" type="button"><i class="bi bi-arrow-right"></i></button>
+        }
+
+    </div>
+</div>
 
 <div>
     <a asp-action="Index" asp-controller="Home">Back to Home Page</a>
 </div>
+
+<script type="text/javascript" src="~/js/Restaurant/filtersAndPagination.js"></script>
+
+<script type="text/javascript">
+    filtersAndPagination(
+        "nextPageButton",
+        "previousPageButton",
+        "filterButton",
+        "currentPage",
+        "Restaurant",
+        [
+            {
+                name: 'typeId',
+                inputId: 'typeIdSelect'
+            },
+            {
+                name: 'cityId',
+                inputId: 'cityIdSelect'
+            }
+        ]
+    );
+</script>
+
+
 
