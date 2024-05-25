@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Restaurant.BusinessLogic.Base;
 using Restaurant.BusinessLogic.Implementation.Products.Models;
 using Restaurant.BusinessLogic.Implementation.Products.Validations;
+using Restaurant.BusinessLogic.Implementation.Restaurants;
 using Restaurant.Common.Exceptions;
 using Restaurant.Common.Extensions;
 using Restaurant.Entities;
@@ -16,10 +17,17 @@ namespace Restaurant.BusinessLogic.Implementation.Products;
 
 public class ProductService : BaseService
 {
+    static private FilterProductModel FilterModel;
+
     private readonly CreateProductValidator CreateProductValidator;
     public ProductService(ServiceDependencies serviceDependencies) : base(serviceDependencies)
     {
         CreateProductValidator = new CreateProductValidator(UnitOfWork);
+
+        if (FilterModel == null)
+        {
+            FilterModel = new FilterProductModel();
+        }
     }
 
     public async Task CreateProduct(CreateProductModel model)
@@ -28,7 +36,7 @@ public class ProductService : BaseService
 
         var product = Mapper.Map<CreateProductModel, Product>(model);
 
-        if(model.Picture != null)
+        if (model.Picture != null)
         {
             using (var ms = new MemoryStream())
             {
@@ -37,19 +45,90 @@ public class ProductService : BaseService
                 product.Picture = fileBytes;
             }
         }
-        
+
         UnitOfWork.Products.Insert(product);
         await UnitOfWork.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<ViewProductModel>> GetProducts(Guid restaurantId)
+    public async Task<IEnumerable<ViewProductModel>> GetProducts(Guid restaurantId, FilterProductModel? filterModel)
     {
-        var products = await UnitOfWork.Products
-            .Get()
-            .Include(p => p.Restaurant)
-            .Where(p => p.Restaurant.Id == restaurantId)
+        var productsQuery = UnitOfWork.Products
+                .Get()
+                .Where(p => p.RestaurantId == restaurantId);
+
+        if (filterModel != null)
+        {
+            if (filterModel.MaxPriceFilter.HasValue)
+            {
+                FilterModel.MaxPriceFilter = filterModel.MaxPriceFilter.Value;
+            }
+
+            if (filterModel.MinPrice.HasValue)
+            {
+                FilterModel.MinPrice = filterModel.MinPrice.Value;
+            }
+
+            if (filterModel.SubcategoryId.HasValue)
+            {
+                FilterModel.SubcategoryId = filterModel.SubcategoryId.Value;
+            }
+
+            if (filterModel.CurrentPage != 0 && filterModel.CurrentPage != 1 && filterModel.CurrentPage != -1)
+            {
+                FilterModel.CurrentPage = 1;
+            }
+            else
+            {
+                FilterModel.CurrentPage += filterModel.CurrentPage;
+            }
+        }
+
+        if (FilterModel.SubcategoryId != 0)
+        {
+            productsQuery = productsQuery.Where(e => e.SubcategoryId == FilterModel.SubcategoryId);
+        }
+        
+        if(FilterModel.MaxPrice == null)
+        {
+            var maxPrice = await UnitOfWork.Products.Get().Where(p => p.RestaurantId == restaurantId).MaxAsync(p => p.Price);
+            FilterModel.MaxPrice = ((int)maxPrice);
+        }
+
+        if (FilterModel.MaxPriceFilter == null)
+        {
+            FilterModel.MaxPriceFilter = FilterModel.MaxPrice;
+        }
+
+        productsQuery = productsQuery.Where(e => e.Price >= FilterModel.MinPrice);
+        productsQuery = productsQuery.Where(e => e.Price <= FilterModel.MaxPriceFilter);
+
+        if (FilterModel.CurrentPage < 1)
+        {
+            FilterModel.CurrentPage = 1;
+        }
+
+        var numberOfProducts = productsQuery.Count();
+
+        var elementsToSkip = (FilterModel.CurrentPage - 1) * FilterModel.ItemsOnPage;
+
+        if (numberOfProducts != 0 && elementsToSkip > numberOfProducts)
+        {
+            FilterModel.CurrentPage--;
+            elementsToSkip = (FilterModel.CurrentPage - 1) * FilterModel.ItemsOnPage;
+        }
+
+        var products = await productsQuery
+            .OrderBy(p => p.SubcategoryId)
+            .Skip(elementsToSkip)
+            .Take(FilterModel.ItemsOnPage)
+            .Select(t => Mapper.Map<Product, ViewProductModel>(t))
             .ToListAsync();
-        return Mapper.Map<IEnumerable<Product>, IEnumerable<ViewProductModel>>(products);
+
+        if (products == null)
+        {
+            throw new NotFoundErrorException();
+        }
+        return products;
     }
 
     public async Task DeleteProduct(Guid productId)
@@ -64,7 +143,10 @@ public class ProductService : BaseService
             UnitOfWork.Products.Delete(product);
             await UnitOfWork.SaveChangesAsync();
         }
+    }
 
-        
+    public FilterProductModel GetFiltersAndCurrentPage()
+    {
+        return FilterModel;
     }
 }

@@ -15,9 +15,9 @@ public class ProductController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(Guid Id)
+    public async Task<IActionResult> Index(Guid Id, FilterProductModel? filterModel = null)
     {
-        var model = await Service.GetProducts(Id);
+        var model = await Service.GetProducts(Id, filterModel);
         ViewBag.RestaurantId = Id;
 
         return View("Index", model);
@@ -46,5 +46,12 @@ public class ProductController : BaseController
         await Service.DeleteProduct(id);
 
         return RedirectToAction("Index", new {Id = restaurantId});
+    }
+
+    [HttpGet]
+    public IActionResult GetFiltersAndCurrentPage()
+    {
+        var filtersAndPagination = Service.GetFiltersAndCurrentPage();
+        return Ok(filtersAndPagination);
     }
 }

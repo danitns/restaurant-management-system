@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Restaurant.BusinessLogic.Implementation.Admin;
 using Restaurant.Web.Code.Base;
 
 namespace Restaurant.Web.Controllers
 {
+	[Authorize(Roles = "Admin")]
 	public class AdminController : BaseController
 	{
 		private readonly AdminService Service;

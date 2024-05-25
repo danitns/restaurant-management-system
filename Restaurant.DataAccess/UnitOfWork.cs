@@ -24,6 +24,9 @@ namespace Restaurant.DataAccess
         private IRepository<Entities.Restaurant> restaurants;
         public IRepository<Entities.Restaurant> Restaurants => restaurants ?? (restaurants = new BaseRepository<Entities.Restaurant>(Context));
 
+        private IRepository<RestaurantSchedule> restaurantSchedules;
+        public IRepository<RestaurantSchedule> RestaurantSchedules => restaurantSchedules ?? (restaurantSchedules = new BaseRepository<RestaurantSchedule>(Context));
+
 
         private IRepository<Category> categories;
         public IRepository<Category> Categories => categories ?? (categories = new BaseRepository<Category>(Context));

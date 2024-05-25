@@ -59,11 +59,11 @@
 	<a asp-action="Index" asp-controller="Home">Back to Home Page</a>
 </div>
 
-<script type="text/javascript" src="~/js/Reservation/createReservation.js" defer />
 
-	@section Scripts {
-		@{
-			await Html.RenderPartialAsync("_ValidationScriptsPartial");
-		}
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	}
-
+	<script type="text/javascript" src="~/js/Reservation/createReservation.js" defer></script>
+}

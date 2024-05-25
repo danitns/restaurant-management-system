@@ -14,24 +14,6 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 {
 	public class ReservationService : BaseService
 	{
-		private static readonly List<TimeOnly> AllReservationHours = new List<TimeOnly>
-		{
-			new TimeOnly(10, 0),  // 10:00
-			new TimeOnly(11, 0),  // 11:00
-			new TimeOnly(12, 0),  // 12:00
-			new TimeOnly(13, 0),  // 13:00
-			new TimeOnly(14, 0),  // 14:00
-			new TimeOnly(15, 0),  // 15:00
-			new TimeOnly(16, 0),  // 16:00
-			new TimeOnly(17, 0),  // 17:00
-			new TimeOnly(18, 0),  // 18:00
-			new TimeOnly(19, 0),  // 19:00
-			new TimeOnly(20, 0),  // 20:00
-			new TimeOnly(21, 0),  // 21:00
-			new TimeOnly(22, 0)   // 22:00
-		};
-
-
 		private readonly CreateReservationValidator CreateReservationValidator;
 		public ReservationService(ServiceDependencies serviceDependencies) : base(serviceDependencies)
 		{
@@ -99,9 +81,11 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 				.OrderBy(t => t.Seats)
 				.ToListAsync();
 
-			var freeIntervals = new List<string>();
+			var allReservationHours = await GetReservationHours(restaurantId);
 
-			foreach (var time in AllReservationHours)
+            var freeIntervals = new List<string>();
+
+			foreach (var time in allReservationHours)
 			{
 				var isFree = tables
 					.Where(t => !t.Reservations.Any(r => DateOnly.FromDateTime(r.Date) == date && (TimeOnly.FromDateTime(r.Date) == time
@@ -119,5 +103,29 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 			}
 			return freeIntervals;
 		}
+
+		private async Task<List<TimeOnly>> GetReservationHours(Guid restaurantId)
+		{
+			var dayOfWeek = (int)DateTime.Now.DayOfWeek;
+
+			var restaurantSchedule = await UnitOfWork.RestaurantSchedules
+				.Get()
+				.Where(r => r.RestaurantId == restaurantId && r.DayOfWeek == dayOfWeek)
+				.SingleOrDefaultAsync();
+
+            if (restaurantSchedule == null)
+            {
+                throw new NotFoundErrorException();
+            }
+            var allReservationHours = new List<TimeOnly>();
+
+            for (TimeOnly time = restaurantSchedule.OpeningTime; time <= restaurantSchedule.ClosingTime.AddHours(-2); time = time.AddHours(1))
+            {
+                allReservationHours.Add(time);
+            }
+
+			return allReservationHours;
+
+        }
 	}
 }

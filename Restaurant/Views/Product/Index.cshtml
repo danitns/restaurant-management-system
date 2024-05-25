@@ -1,6 +1,7 @@
 ﻿@using Restaurant.BusinessLogic.Implementation.Products.Models
 @model IEnumerable<Restaurant.BusinessLogic.Implementation.Products.Models.ViewProductModel>
 @using Microsoft.AspNetCore.Http
+@using Restaurant.Entities.Enums
 @inject IHttpContextAccessor HttpContextAccessor
     
 @{
@@ -11,6 +12,36 @@
 
 <div>
     <a class="btn btn-outline-dark" asp-action="CreateProduct" asp-controller="Product" asp-route-id="@ViewBag.RestaurantId">Create product</a>
+</div>
+
+<div>
+    <h5>Filters:</h5>
+    <label>
+        Type:
+        <select asp-items="Html.GetEnumSelectList<SubcategoryTypes>()" name="SubcategoryId" id="subcategoryIdSelect" class="form-select"></select>
+    </label>
+    <div class="w-25">
+        <div class="range_container">
+            <div class="sliders_control">
+                <input id="fromSlider" type="range" value="0" min="0" max="100" />
+                <input id="toSlider" type="range" value="0" min="0" max="100" />
+            </div>
+            <div class="form_control">
+                <div class="form_control_container">
+                    <div class="form_control_container__time">Min</div>
+                    <input class="form_control_container__time__input" type="number" id="fromInput" value="0" min="0" max="100" />
+                </div>
+                <div class="form_control_container">
+                    <div class="form_control_container__time">Max</div>
+                    <input class="form_control_container__time__input" type="number" id="toInput" value="0" min="0" max="100" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <a class="btn btn-primary" type="button" id="filterButton">Filter</a>
+    </div>
+    <input type="hidden" name="CurrentPage" id="pageControl" value="0" />
 </div>
 
 @if (Model.Count() > 0)
@@ -48,8 +79,63 @@ else
     </div>
 }
 
+<div class="d-flex flex-row justify-content-center">
+    <div>
+        <button id="previousPageButton" class="btn btn-outline-primary" type="button"><i class="bi bi-arrow-left"></i></button>
+    </div>
+    <div>
+        <div id="currentPage" class="p-1"></div>
+    </div>
+    <div>
+        @if (Model.Count() < 6)
+        {
+            <button id="nextPageButton" class="btn btn-outline-primary" disabled type="button"><i class="bi bi-arrow-right"></i></button>
+        }
+        else
+        {
+            <button id="nextPageButton" class="btn btn-outline-primary" type="button"><i class="bi bi-arrow-right"></i></button>
+        }
+
+    </div>
+</div>
+
 <div>
     <a asp-action="Index" asp-controller="Home">Back to Home Page</a>
 </div>
 
 <script type="text/javascript" src="~/js/deleteButton.js" defer></script>
+
+<script type="text/javascript" src="~/js/Restaurant/dualRangeSlider.js"></script>
+
+<script type="text/javascript" src="~/js/Restaurant/filtersAndPagination.js"></script>
+
+<script type="text/javascript">
+    filtersAndPagination(
+        "nextPageButton",
+        "previousPageButton",
+        "filterButton",
+        "currentPage",
+        "Product",
+        [
+            {
+                name: 'subcategoryId',
+                inputId: 'subcategoryIdSelect'
+            },
+            {
+                name: 'minPrice',
+                inputId: 'fromInput'
+            },
+            {
+                name: 'maxPriceFilter',
+                inputId: 'toInput'
+            }
+        ],
+        '@ViewBag.RestaurantId',
+        [
+            'fromInput',
+            'toInput',
+            'fromSlider',
+            'toSlider'
+        ]
+    );
+</script>

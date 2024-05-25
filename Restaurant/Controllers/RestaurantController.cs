@@ -43,7 +43,7 @@ namespace Restaurant.Web.Controllers
 			return View(model);
 		}
 
-        [HttpGet("get-filters")]
+        [HttpGet]
         public IActionResult GetFiltersAndCurrentPage()
         {
             var filtersAndPagination = Service.GetFiltersAndCurrentPage();
