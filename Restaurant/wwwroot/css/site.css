@@ -1,24 +1,29 @@
 html {
-  font-size: 14px;
+    --main-background-color: #fff1de;
+    --primary-color: #0f5132;
+    --primary-color-hover: #062e1b;
+    --secondary-color: #b36321;
+    --accent-color: #faac12;
+}
+
+
+html {
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
+    position: relative;
+    min-height: 100%;
 }
 
 .card-img-top-container {
@@ -43,3 +48,141 @@ body {
     width: 100%;
     object-fit: fill;
 }
+
+.row {
+    margin: 0;
+}
+
+.register-card {
+    background-color: white;
+    border: 1px solid #cfcfcf;
+    border-radius: 20px;
+}
+
+.main-background-color {
+    background-color: var(--main-background-color);
+}
+
+.background-image {
+    background-image: url('/images/registerpagepicture.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100%;
+}
+
+.background-image-no-repeat {
+    background-image: url('/images/registerpagepicture.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100%;
+    background-color: var(--main-background-color);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+    .btn-primary:hover {
+        background-color: var(--primary-color-hover);
+        border-color: var(--primary-color-hover);
+    }
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    color: white;
+    background-color: var(--primary-color-hover);
+    border-color: var(--primary-color-hover);
+}
+
+.link-a, link-a:visited {
+    color: var(--secondary-color);
+}
+
+    .link-a:hover {
+        color: var(--accent-color);
+    }
+
+.nav-item:hover {
+    background-color: var(--primary-color);
+}
+
+.dropdown-item.active, .dropdown-item:active, .dropdown-item:hover {
+    color: #fff;
+    text-decoration: none;
+    background-color: var(--secondary-color);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-secondary {
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+    .btn-outline-secondary:hover {
+        color: white;
+        background-color: var(--secondary-color);
+        border-color: var(--secondary-color);
+    }
+
+    .btn-check:active + .btn-outline-secondary:focus, .btn-check:checked + .btn-outline-secondary:focus, .btn-outline-secondary.active:focus, .btn-outline-secondary.dropdown-toggle.show:focus, .btn-outline-secondary:active:focus {
+        box-shadow: 0 0 0 .25rem var(--secondary-color);
+    }
+
+.bi {
+    vertical-align: -.125em;
+    fill: currentColor;
+}
+
+.feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    color: #fff;
+    border-radius: .75rem;
+}
+
+.icon-link {
+    display: inline-flex;
+    align-items: center;
+}
+
+    .icon-link > .bi {
+        margin-top: .125rem;
+        margin-left: .125rem;
+        transition: transform .25s ease-in-out;
+        fill: currentColor;
+    }
+
+    .icon-link:hover > .bi {
+        transform: translate(.25rem);
+    }
+
+.bg-primary {
+    --bs-bg-opacity: 1;
+    background-color: var(--secondary-color) !important;
+}
+
+.pagination-card {
+    width: 10%;
+}
+
+.pagination-button {
+    border: none;
+    background-color: transparent;
+    padding: 2px;
+    margin: 2px;
+}
+

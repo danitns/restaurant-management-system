@@ -1,0 +1,59 @@
+﻿.sidebarLogo {
+    width: 80%;
+    height: auto;
+}
+
+html{
+    height: 100%
+}
+
+body{
+    height: 100%;
+}
+
+.sidebarContainer {
+    background-color: #062e1b;
+}
+
+.product-device {
+    position: absolute;
+    right: 10%;
+    bottom: -30%;
+    width: 300px;
+    height: 540px;
+    background-color: var(--primary-color);
+    border-radius: 21px;
+    transform: rotate(30deg);
+}
+
+.product-device::before {
+    position: absolute;
+    top: 10%;
+    right: 10px;
+    bottom: 10%;
+    left: 10px;
+    content: "";
+    background-color: rgba(255, 255, 255, .1);
+    border-radius: 5px;
+}
+
+.product-device-2 {
+    top: -25%;
+    right: auto;
+    bottom: 0;
+    left: 5%;
+    background-color: var(--accent-color);
+}
+
+.front-card {
+    z-index: 1000;
+    position: relative;
+}
+
+@media (max-width: 700px) {
+    .profile-name {
+        display: none;
+    }
+}
+
+

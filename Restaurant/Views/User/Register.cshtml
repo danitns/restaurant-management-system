@@ -4,56 +4,67 @@
     ViewData["Title"] = "Register";
 }
 
-<h1>Register</h1>
 
-<div class="row">
-    <div class="col-md-4 ml-auto mr-auto">
-        <form asp-action="Register" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label">First name</label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
+<div class="row h-100 main-background-color">
+    <div class="col-md-6 mx-auto my-auto px-5">
+        <div class="h-100 register-card shadow">
+            <h1 class="text-center mt-3">Register</h1>
+            <h3 class="text-center mt-2 mb-5">Create a new account on our platform</h3>
+            <div class="m-auto mt-5 px-5 ">
+                <form asp-action="Register" enctype="multipart/form-data">
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="row">
+                        <div class="form-group col-md-6 my-2">
+                            <label asp-for="FirstName" class="control-label">First name</label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6 my-2">
+                            <label asp-for="LastName" class="control-label">Last name</label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group my-1">
+                            <label asp-for="Email" class="control-label"></label>
+                            <input asp-for="Email" type="email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6 my-1">
+                            <label asp-for="Password" class="control-label"></label>
+                            <input type="password" asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-6 my-1">
+                            <label asp-for="ConfirmPassword" class="control-label">Confirm password</label>
+                            <input type="password" asp-for="ConfirmPassword" class="form-control" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                        </div>
+                        <div class="form-group my-1">
+                            <label asp-for="Phone" class="control-label"></label>
+                            <input asp-for="Phone" class="form-control" />
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </div>
+                        <div class="form-group my-1">
+                            <label asp-for="Birthdate" class="control-label"></label>
+                            <input type="date" asp-for="Birthdate" value="2000-01-01" class="form-control" />
+                            <span asp-validation-for="Birthdate" class="text-danger"></span>
+                        </div>
+                        <div class="my-2 text-center">
+                            <button type="submit" class="btn btn-primary mx-auto btn-lg">Submit</button>
+                        </div>
+                    </div>
+
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label">Last name</label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" type="email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input type="password" asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ConfirmPassword" class="control-label">Confirm password</label>
-                <input type="password" asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Birthdate" class="control-label"></label>
-                <input type="date" asp-for="Birthdate" value="2000-01-01" class="form-control" />
-                <span asp-validation-for="Birthdate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Register" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
+        
+        
     </div>
-</div>
-
-<div>
-    <a asp-action="Index" asp-controller="Home">Back to Home Page</a>
+    <div class="col-md-6 p-0">
+        <div class="w-100 h-100 background-image">
+        </div>
+    </div>
 </div>
 
 @section Scripts {

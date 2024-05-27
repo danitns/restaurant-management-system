@@ -3,79 +3,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Restaurant</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/dualRangeSlider.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Restaurant.styles.css" asp-append-version="true" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - StaiJos</title>
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/dualRangeSlider.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/Restaurant.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Restaurant</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Restaurant" asp-action="Index">Restaurants</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="align-self-center w-25 d-flex justify-content-end">
-                    @if (CurrentUser.IsAuthenticated)
-                    {
-                        <div>
-                            <button class="nav-link" type="button" data-bs-toggle="modal" data-bs-target="#userDetailsModal"><i class="bi bi-person"></i>@CurrentUser.Name</button>
-                        </div>
-                        <div>
-                            <a asp-controller="User" asp-action="Logout" class="nav-link"><i class="bi bi-door-open"></i>Log out</a>
-                        </div>
-                    }
-                    else
-                    {
-                        <div>
-                            <a asp-controller="User" asp-action="Login" class="nav-link"><i class="bi bi-box-arrow-in-right"></i>Log in</a>
-                        </div>
-                        <div>
-                            <a asp-controller="User" asp-action="Register" class="nav-link"><i class="bi bi-person-add"></i>Register</a>
-                        </div>
-                        <div>
-                            <a asp-controller="Table" asp-action="CreateTable" class="nav-link"><i class="bi bi-person-add"></i>Table</a>
-                        </div>
+	<div class="d-flex flex-row h-100">
+		<div class="d-flex flex-column col-md-2 col-sm-4 flex-shrink-0 p-3 sidebarContainer">
+			<a asp-action="Index" class="d-flex align-items-center mb-3 mb-md-0 mx-auto text-decoration-none">
+				<img src="~/images/logo.png" class="sidebarLogo mx-auto" />
+			</a>
+			<hr style="color: white">
+			<ul class="nav nav-pills flex-column mb-auto">
+				<li class="nav-item">
+					<a asp-action="Index" asp-controller="Home" class="nav-link text-white">
+						<i class="bi bi-house-door"></i>
+						Home
+					</a>
+				</li>
+				<li class="nav-item">
+					<a asp-action="Index" asp-controller="Restaurant" class="nav-link text-white">
+						<i class="bi bi-cup-straw"></i>
+						Restaurants
+					</a>
+				</li>
+				@if (CurrentUser.IsAuthenticated)
+				{
+					<li class="nav-item">
+						<a asp-action="Index" asp-controller="Reservation" class="nav-link text-white">
+							<i class="bi bi-clock"></i>
+							Reservations
+						</a>
+					</li>
+					<li class="nav-item">
+						<a asp-action="Index" asp-controller="Admin" class="nav-link text-white">
+							<i class="bi bi-speedometer2"></i>
+							Admin Dashboard
+						</a>
+					</li>
+				}
+			</ul>
+			<hr>
+			<div class="dropdown">
+				<hr style="color: white">
+				<a href="#" class="d-flex align-items-center text-white text-decoration-none row" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+					<div class="col-3">
+						<img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" alt="" width="100%" height="auto" class="rounded-circle">
+					</div>
+					
+					@if (CurrentUser.IsAuthenticated)
+					{
+						<strong class="profile-name col-7 flex-shrink-1">@CurrentUser.Name</strong>
+					}
+					else
+					{
+						<strong class="col-7">Profile</strong>
+					}
+					<div class="col-1"><i class="bi bi-chevron-compact-down"></i></div>
 
-                    }
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @await Html.PartialAsync("../User/Details.cshtml")
-            @RenderBody()
-        </main>
-    </div>
+				</a>
+				<ul class="dropdown-menu dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
+					@if (CurrentUser.IsAuthenticated)
+					{
+						<li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#userDetailsModal">Profile</button></li>
+						<li><hr class="dropdown-divider"></li>
+						<li><a asp-action="Logout" asp-controller="User" class="dropdown-item">Sign out</a></li>
+					}
+					else
+					{
+						<li><a asp-action="Login" asp-controller="User" class="dropdown-item">Sign in</a></li>
+						<li><a asp-action="Register" asp-controller="User" class="dropdown-item">Register</a></li>
+					}
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - Restaurant - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+				</ul>
+			</div>
+		</div>
+		<div class="flex-column col-md-10 col-sm-8 overflow-auto">
+			@await Html.PartialAsync("../User/Details.cshtml")
+			@RenderBody()
+		</div>
+	</div>
+
+
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
