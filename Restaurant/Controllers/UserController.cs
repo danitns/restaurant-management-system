@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.BusinessLogic.Implementation.Users;
+using Restaurant.Entities.Enums;
 using Restaurant.Web.Code.Base;
 using Restaurant.Web.Code.Utils;
 
@@ -71,9 +73,15 @@ namespace Restaurant.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> BecomeManager()
         {
             await Service.BecomeManager();
+            var user = CurrentUser;
+            user.Role = RoleTypes.PendingManager.ToString();
+            await LoginUtils.LogOut(HttpContext);
+            await LoginUtils.LogIn(user, HttpContext);
+
             return Ok(new { success = true });
         }
     }

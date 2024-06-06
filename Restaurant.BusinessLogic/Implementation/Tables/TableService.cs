@@ -29,5 +29,23 @@ namespace Restaurant.BusinessLogic.Implementation.Tables
             UnitOfWork.Tables.Insert(table);
             await UnitOfWork.SaveChangesAsync();
         }
+
+        public async Task CheckForOwner(Guid restaurantId)
+        {
+            var restaurant = await UnitOfWork
+                .Restaurants
+                .Get()
+                .SingleOrDefaultAsync(r => r.Id == restaurantId);
+
+            if (restaurant == null)
+            {
+                throw new NotFoundErrorException();
+            }
+
+            if (restaurant.UserId != CurrentUser.Id && CurrentUser.Role != "Admin")
+            {
+                throw new AccessViolationException();
+            }
+        }
     }
 }

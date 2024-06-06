@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Restaurant.BusinessLogic.Base;
+using Restaurant.BusinessLogic.Implementation.Restaurants;
 using Restaurant.BusinessLogic.Implementation.Users;
 using Restaurant.Common.Exceptions;
 using Restaurant.Entities.Enums;
@@ -22,7 +23,20 @@ namespace Restaurant.BusinessLogic.Implementation.Admin
 		{
 			AdminDashboardModel model = new AdminDashboardModel();
 			model.PendingManagers = await GetPendingManagers();
+			model.RestaurantTop = await GetRestaurantTop();
 			return model;
+		}
+
+		private async Task<List<RestaurantAndReservations>> GetRestaurantTop()
+		{
+			var restaurants = await UnitOfWork.Restaurants
+				.Get()
+				.Include(r => r.RestaurantSchedules)
+				.OrderBy(r => r.RestaurantSchedules.Count())
+				.Select(r => Mapper.Map<RestaurantAndReservations>(r))
+				.ToListAsync();
+
+			return restaurants;
 		}
 
 		private async Task<List<DetailsUserModel>> GetPendingManagers()

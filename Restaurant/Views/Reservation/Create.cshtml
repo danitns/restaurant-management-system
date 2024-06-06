@@ -7,24 +7,22 @@
 	ViewData["Title"] = "Reservation";
 }
 
-<h1>Create Reservation</h1>
-
-<div class="row">
-	<div class="col-md-4 ml-auto mr-auto">
+<div class="row h-100 bg-light">
+	<div class="col-md-4 m-auto p-5 register-card shadow-lg">
+		<h1 class="text-center">Create Reservation</h1>
 		<form asp-action="Create" enctype="multipart/form-data">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<div class="form-group">
+			<div class="form-group my-2">
 				<label asp-for="NumberOfGuests" class="control-label">Number of guests:</label>
-				<input asp-for="NumberOfGuests" type="number" class="form-control" id="numberOfGuestsInput" />
+				<input asp-for="NumberOfGuests" type="number" class="form-control" id="numberOfGuestsInput" value="1" />
 				<span asp-validation-for="NumberOfGuests" class="text-danger"></span>
 			</div>
-			<div class="form-group">
+			<div class="form-group my-2">
 				<label asp-for="Date" class="control-label">Date: </label>
-				<input asp-for="Date" type="date" class="form-control" id="dateInput" />
+				<input asp-for="Date" type="date" class="form-control" id="dateInput" value="@DateTime.Now.ToString("yyyy-MM-dd")" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
 				<span asp-validation-for="Date" class="text-danger"></span>
 			</div>
-
-			<div class="form-group">
+			<div class="form-group my-2">
 				<label asp-for="Phone" class="control-label"></label>
 				@if (CurrentUser.IsAuthenticated)
 				{
@@ -36,11 +34,7 @@
 				}
 				<span asp-validation-for="Phone" class="text-danger"></span>
 			</div>
-
-			<div>
-				<button class="btn btn-primary" id="findButton" type="button">Find</button>
-			</div>
-			<div class="form-group">
+			<div class="form-group my-2">
 				<label asp-for="Time" class="control-label">Time: </label>
 				<select asp-for="Time" id="timeSelect" class="form-control">
 					<option value="">Please select</option>
@@ -48,17 +42,13 @@
 				<span asp-validation-for="Time" class="text-danger"></span>
 			</div>
 			<input type="hidden" id="restaurantIdInput" asp-for="RestaurantId" value="@Model.RestaurantId" />
-			<div>
-				<button class="btn btn-primary" type="submit">Create</button>
+			<div class="my-2 text-center">
+				<a asp-action="Details" asp-controller="Restaurant" asp-route-id="@Model.RestaurantId" class="btn btn-primary">Cancel</a>
+				<button type="submit" class="btn btn-primary">Create</button>
 			</div>
 		</form>
 	</div>
 </div>
-
-<div>
-	<a asp-action="Index" asp-controller="Home">Back to Home Page</a>
-</div>
-
 
 
 @section Scripts {

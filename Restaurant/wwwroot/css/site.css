@@ -39,14 +39,34 @@ html {
 }
 
 .restaurant-card {
-    height: 210px;
+    height: 260px;
     margin: 1% 0 1% 0;
+    background-color: white;
+    border: 1px solid #cfcfcf;
+    border-radius: 20px;
+    margin-bottom: 10px;
+}
+
+    .restaurant-card:hover {
+        background-color: #f7f7f7;
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+    }
+
+    .restaurant-card:hover h3 {
+        color: var(--secondary-color)
+    }
+
+.vertical-separator {
+    height: 80%;
+    width: 1px;
+    color: #cfcfcf;
 }
 
 .restaurant-card-img {
     height: 100%;
     width: 100%;
-    object-fit: fill;
+    object-fit: contain;
+    border-radius: 12px;
 }
 
 .row {
@@ -186,3 +206,26 @@ html {
     margin: 2px;
 }
 
+.floating-filter-card {
+    position: sticky;
+    top: 16px;
+}
+
+.block-link, .block-link:hover {
+    display: block;
+    text-decoration: none;
+    color: black;
+}
+
+.img-border {
+    border: 1px solid #cfcfcf;
+    height: 100%;
+}
+
+.product-card {
+    min-height: 700px;
+}
+
+.reservation-card {
+    max-height: 300px
+}

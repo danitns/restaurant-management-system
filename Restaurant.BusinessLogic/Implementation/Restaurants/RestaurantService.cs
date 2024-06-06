@@ -53,14 +53,24 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
 
         public async Task<ViewRestaurantModel> GetDetails(Guid id)
         {
-			var restaurant = await UnitOfWork.Restaurants.Get().SingleOrDefaultAsync(r => r.Id == id);
+			var restaurant = await UnitOfWork.Restaurants
+				.Get()
+                .Include(r => r.Tables)
+                .Include(r => r.RestaurantSchedules)
+				.SingleOrDefaultAsync(r => r.Id == id);
 
 			if(restaurant == null)
 			{
 				throw new NotFoundErrorException();
 			}
 
-			return Mapper.Map<Entities.Restaurant, ViewRestaurantModel>(restaurant);
+			restaurant.RestaurantSchedules = restaurant.RestaurantSchedules.OrderBy(r => r.DayOfWeek).ToList();
+
+			var mappedRestaurant = Mapper.Map<Entities.Restaurant, ViewRestaurantModel>(restaurant);
+
+			mappedRestaurant.IsMyRestaurant = CurrentUser.Id == restaurant.UserId;
+
+			return mappedRestaurant;
         }
 
         public FilterRestaurantModel GetFiltersAndCurrentPage()

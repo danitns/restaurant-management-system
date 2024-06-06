@@ -18,7 +18,9 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants.Mappings
 				.ForMember(d => d.Id, d => d.MapFrom(s => Guid.NewGuid()))
 				.ForMember(d => d.RestaurantId, d => d.Ignore());
 
-			CreateMap<CreateRestaurantModel, Entities.Restaurant>()
+            CreateMap<RestaurantSchedule, RestaurantScheduleModel>();
+
+            CreateMap<CreateRestaurantModel, Entities.Restaurant>()
 				.ForMember(d => d.Id, d => d.MapFrom(s => Guid.NewGuid()))
 				.ForMember(d => d.RestaurantSchedules, d => d.MapFrom(s => s.Schedules))
 				.ForMember(d => d.UserId, d => d.Ignore())
@@ -26,7 +28,13 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants.Mappings
 
 			CreateMap<Entities.Restaurant, ViewRestaurantModel>()
 				.ForMember(d => d.CityName, d => d.MapFrom(s => Enum.GetName(typeof(Cities), s.CityId)))
-                .ForMember(d => d.TypeName, d => d.MapFrom(s => Enum.GetName(typeof(RestaurantTypeEnum), s.RestaurantTypeId)));
+                .ForMember(d => d.TypeName, d => d.MapFrom(s => Enum.GetName(typeof(RestaurantTypeEnum), s.RestaurantTypeId)))
+				.ForMember(d => d.Schedules, d => d.MapFrom(s => s.RestaurantSchedules))
+				.ForMember(d => d.Tables, d => d.MapFrom(s => s.Tables))
+				.ForMember(d => d.IsMyRestaurant, d => d.Ignore());
+
+			CreateMap<Entities.Restaurant, RestaurantAndReservations>()
+				.ForMember(d => d.NumberOfReservations, d => d.MapFrom(s => s.RestaurantSchedules.Count()));
 		}
 	}
 }

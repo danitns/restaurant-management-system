@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Restaurant.BusinessLogic.Implementation.Reservations;
 using Restaurant.Web.Code.Base;
 
@@ -13,6 +14,7 @@ namespace Restaurant.Web.Controllers
             Service = service;
         }
 
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var reservations = await Service.GetReservations();
@@ -31,7 +33,7 @@ namespace Restaurant.Web.Controllers
         public async Task<IActionResult> Create(CreateReservationModel model)
         {
             await Service.CreateReservation(model);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Restaurant");
         }
 
         [HttpGet]

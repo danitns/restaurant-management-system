@@ -5,46 +5,53 @@
     ViewData["Title"] = "CreateProduct";
 }
 
-<h1>Create Product</h1>
+<div class="row p-5">
+    <div class="register-card p-0 row shadow-lg product-card">
+        <div class="col-md-5">
+            <h1 class="text-center mt-3">Add a product</h1>
+            <form asp-action="CreateProduct" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Picture" class="control-label">Picture</label>
+                    <input type="file" id="productPicture" asp-for="Picture" class="form-control" accept="image/*" />
+                    <span asp-validation-for="Picture" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label">Name</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-6 ps-0">
+                        <label asp-for="SubcategoryId" class="control-label">Subcategory</label>
+                        <select asp-for="SubcategoryId" asp-items="Html.GetEnumSelectList<SubcategoryTypes>()" class="form-select"></select>
+                        <span asp-validation-for="SubcategoryId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6 pe-0">
+                        <label asp-for="Price" class="control-label">Price</label>
+                        <input type="number" asp-for="Price" class="form-control" step="0.5" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                </div>
 
-<div class="row">
-    <div class="col-md-4 ml-auto mr-auto">
-        <form asp-action="CreateProduct" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label">Name</label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <input type="hidden" asp-for="RestaurantId" value="@Model.RestaurantId" />
+
+                <div class="form-group text-center my-4">
+                    <button type="submit" value="Create" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-7 p-5">
+            <div class="img-border" id="productPictureContainer">
             </div>
-            <div class="form-group">
-                <label asp-for="SubcategoryId" class="control-label">Subcategory</label>
-                <select asp-for="SubcategoryId" asp-items="Html.GetEnumSelectList<SubcategoryTypes>()" class="form-control"></select>
-                <span asp-validation-for="SubcategoryId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label">Price</label>
-                <input type="number" asp-for="Price" class="form-control" step="0.5" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Picture" class="control-label">Picture</label>
-                <input type="file" asp-for="Picture" class="form-control" accept="image/*" />
-                <span asp-validation-for="Picture" class="text-danger"></span>
-            </div>
-            <input type="hidden" asp-for="RestaurantId" value="@Model.RestaurantId" />
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index" asp-controller="Home">Back to Home Page</a>
 </div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script type="module" src="~/js/Product/previewProductPicture.js"></script>
 }

@@ -15,7 +15,7 @@ namespace Restaurant.BusinessLogic.Implementation.Products.Models
 
         public byte[] Picture { get; set; }
 
-        public Subcategory Subcategory { get; set; }
+        public int SubcategoryId { get; set; }
 
         public Guid RestaurantId { get; set; }
     }
