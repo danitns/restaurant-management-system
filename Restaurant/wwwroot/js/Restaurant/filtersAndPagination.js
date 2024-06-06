@@ -1,7 +1,7 @@
-﻿const filtersAndPagination = (nextButtonId, prevButtonId, filterButtonId, currentPageDivId, controllerName, inputsIdsAndNames) => {
+﻿const filtersAndPagination = (nextButtonId, prevButtonId, filterButtonId, currentPageDivId, controllerName, inputsIdsAndNames, objectId, maxLimitInputIds) => {
 
     const setCurrrentFiltersAndPage = async () => {
-        var response = await fetch('/get-filters', {
+        var response = await fetch(`/${controllerName}/GetFiltersAndCurrentPage`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -21,6 +21,14 @@
                 }
             })
 
+            if (maxLimitInputIds) {
+                maxLimitInputIds.forEach((elemId) => {
+                    elem = document.getElementById(elemId);
+                    elem.max = jsonResponse.maxPrice;
+                    elem.dispatchEvent(new Event('input'));
+                })
+            }
+
             currentPage.innerHTML = jsonResponse.currentPage;
             if (currentPage.innerText == "1") {
                 prevButton.disabled = true;
@@ -32,7 +40,13 @@
     }
 
     const createQueryString = () => {
-        let queryString = `/${controllerName}/Index?`
+        let queryString = `/${controllerName}/Index`
+        if (objectId !== undefined) {
+            queryString = queryString.concat(`/${objectId}?`);
+        }
+        else {
+            queryString = queryString.concat('?');
+        }
         inputsIdsAndNames.forEach((element) => {
             const inputElement = document.getElementById(element.inputId);
             queryString = queryString.concat(`FilterModel.${element.name}=${inputElement.value}&`);

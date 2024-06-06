@@ -19,7 +19,7 @@
 				<p>Phone number: @CurrentUser.Phone</p>
 				@if (CurrentUser.Role == RoleTypes.User.ToString())
 				{
-					<div class="alert alert-primary" id="become-manager-div">
+					<div class="alert alert-success" id="become-manager-div">
 						<h6>You can add your own restaurants. Apply now!</h6>
 						<button class="btn btn-primary" onclick="updateRole()">Become a manager</button>
 					</div>
@@ -28,7 +28,7 @@
 				}
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
 			</div>
 		</div>
 	</div>

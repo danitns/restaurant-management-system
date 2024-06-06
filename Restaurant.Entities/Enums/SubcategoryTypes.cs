@@ -8,6 +8,7 @@ namespace Restaurant.Entities.Enums;
 
 public enum SubcategoryTypes
 {
+    All = 0,
     SoftDrinks = 1,
     Coffee = 2,
     Cocktails = 3,

@@ -63,7 +63,7 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
 			return Mapper.Map<Entities.Restaurant, ViewRestaurantModel>(restaurant);
         }
 
-        public object GetFiltersAndCurrentPage()
+        public FilterRestaurantModel GetFiltersAndCurrentPage()
         {
 			return FilterModel;
         }

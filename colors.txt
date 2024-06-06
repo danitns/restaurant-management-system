@@ -1,0 +1,5 @@
+primary: #0f5132
+primary-hover: #062e1b
+secondary: #b36321
+accent: #faac12
+background: #fff1de
