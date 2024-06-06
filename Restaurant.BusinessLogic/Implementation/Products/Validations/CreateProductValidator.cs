@@ -17,20 +17,25 @@ public class CreateProductValidator : AbstractValidator<CreateProductModel>
     {
         RuleFor(r => r.Name)
             .NotEmpty().WithMessage("Please enter product name")
-            .Must(NotAlreadyExistName).WithMessage("Product name already exists")
-            .Length(3, 40).WithMessage("Length between 3 and 40 characters")
+            .Must((request, name) => NotAlreadyExistName(request.RestaurantId, name)).WithMessage("Product name already exists")
+            .Length(3, 255).WithMessage("Length between 3 and 255 characters")
             .Must(ValidationFunctions.ContainsOnlyLetters).WithMessage("Please enter only letters");    
 
         RuleFor(r => r.Price)
             .NotEmpty().WithMessage("Please enter product price")
-            .GreaterThan(0).WithMessage("Price must be greater than 0");
+            .GreaterThan(0).WithMessage("Price must be greater than 0")
+            .LessThan(1000000).WithMessage("It's too expensive");
+
+        RuleFor(r => r.SubcategoryId)
+            .GreaterThan(0).WithMessage("Please select an individual category")
+            .LessThanOrEqualTo(14).WithMessage("Invalid Option");
 
         _unitOfWork = unitOfWork;
     }
 
-    public bool NotAlreadyExistName(string name)
+    public bool NotAlreadyExistName(Guid restaurantId, string name)
     {
-        var productsWithTheSameName = !_unitOfWork.Products.Get().Any(p => p.Name == name);
+        var productsWithTheSameName = !_unitOfWork.Products.Get().Any(p => p.Name == name && p.RestaurantId == restaurantId);
         return productsWithTheSameName;
     }
 

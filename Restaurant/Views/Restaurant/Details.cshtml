@@ -1,38 +1,61 @@
-﻿@model Restaurant.BusinessLogic.Implementation.Restaurants.ViewRestaurantModel
+﻿@using Restaurant.Common.DTOs
+@model Restaurant.BusinessLogic.Implementation.Restaurants.ViewRestaurantModel
+@inject CurrentUserDTO CurrentUser
 
 @{
 	ViewData["Title"] = "Restaurant";
 }
-<h1 class="text-center">@Model.Name</h1>
 
-<div class="container">
-	<div class="row">
-		<div class="col-4">
-			<img class="card-img-top-container" src="data:image/png;base64,@Convert.ToBase64String(Model.Picture)" alt="" />
-			<div class="card-body">
-				<h5 class="card-title">@Model.Name</h5>
-				<p class="card-text">@Model.CityName</p>
-				<p class="card-text">@Model.Address</p>
+<div class="row bg-light p-5">
+	<div class="register-card p-0 row shadow-lg">
+		<div class="col-md-5 p-2">
+			<img src="data:image/png;base64,@Convert.ToBase64String(Model.Picture)" class="restaurant-card-img" alt="" />
+		</div>
+		<div class="col-md-7 d-flex justify-content-around flex-column ps-4 pe-4">
+			<div class="row">
+				<h1>@Model.Name</h1>
+			</div>
+			<div class="row">
+				<p><i class="bi bi-geo-alt"></i> City: @Model.CityName</p>
+				<p><i class="bi bi-compass"></i> Address: @Model.Address</p>
+				<p><i class="bi bi-building"></i> Local type: @Model.TypeName</p>
+				<p><i class="bi bi-chat-dots"></i> Description: @Model.Description</p>
+				<p><i class="bi bi-clock-history"></i> Schedule:</p>
+				<div class="row d-flex justify-content-start px-0 text-center mb-2">
+					@foreach (var schedule in Model.Schedules)
+					{
+						<div class="d-flex flex-column col-md-3 border">
+							<div class="fw-bold">@((DayOfWeek)schedule.DayOfWeek)</div>
+							<div>@(schedule.OpeningTime) - @(schedule.ClosingTime)</div>
+						</div>
+					}
+				</div>
+				<p><i class="bi bi-columns-gap"></i> Tables:</p>
+				<div class="row d-flex justify-content-start px-0 text-center mb-3">
+					@foreach (var table in Model.Tables)
+					{
+						<div class="d-flex flex-column col-md-3 border">
+							<div class="fw-bold">@table.Name</div>
+							<div>Seats: @table.Seats</div>
+						</div>
+					}
+				</div>
+			</div>
+			<div class="row d-flex justify-content-start flex-row mx-2 mb-3">
+				<div class="w-auto">
+					<a asp-action="Index" asp-controller="Product" asp-route-id="@Model.Id" class="btn btn-primary">View Menu</a>
+				</div>
+				<div class="w-auto">
+					<a asp-action="Create" asp-controller="Reservation" asp-route-id="@Model.Id" class="btn btn-primary">Create Reservation</a>
+				</div>
+				@if(CurrentUser.Role == "Admin" || Model.IsMyRestaurant)
+				{
+					<div class="w-auto">
+						<a asp-action="CreateTable" asp-controller="Table" asp-route-id="@Model.Id" class="btn btn-primary">Add Table</a>
+					</div>
+				}
 			</div>
 		</div>
-		<div class="col-8">
-			<a asp-action="Index" asp-controller="Product" asp-route-id="@Model.Id" class="btn btn-primary">View Menu</a>
-			<a asp-action="CreateTable" asp-controller="Table" asp-route-id="@Model.Id" class="btn btn-primary">Add Table</a>
-			<a asp-action="Index" asp-controller="Table" asp-route-id="@Model.Id" class="btn btn-primary">View Tables</a>
-			<a asp-action="Create" asp-controller="Reservation" asp-route-id="@Model.Id" class="btn btn-primary">Create Reservation</a>
-		</div>
 	</div>
+
 </div>
-
-<div>
-	<a asp-action="Index" asp-controller="Home">Back to List</a>
-</div>
-
-
-<style>
-	.card-img-top-container {
-		width: 100%;
-		height: auto;
-	}
-</style>
-

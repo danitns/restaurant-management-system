@@ -4,32 +4,29 @@
     ViewData["Title"] = "Table";
 }
 
-<h1>Table</h1>
 
-<div class="row">
-    <div class="col-md-4 ml-auto mr-auto">
+<div class="row h-100 bg-light">
+    <div class="col-md-4 m-auto p-5 register-card shadow-lg">
+        <h1 class="text-center">Create Table</h1>
         <form asp-action="CreateTable" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label">Table name</label>
+            <div class="form-group my-2">
+                <label asp-for="Name" class="control-label">Table Name</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Seats" class="control-label">Number of seats</label>
-                <input asp-for="Seats" class="form-control" />
+            <div class="form-group my-2">
+                <label asp-for="Seats" class="control-label">Number Of Seats</label>
+                <input asp-for="Seats" type="number" class="form-control" min="1" max="15"/>
                 <span asp-validation-for="Seats" class="text-danger"></span>
             </div>
             <input type="hidden" asp-for="RestaurantId" value="@Model.RestaurantId" />
-            <div class="form-group">
-                <input type="submit" value="Add Table" class="btn btn-primary" />
+            <div class="my-2 text-center">
+                <a asp-action="Details" asp-controller="Restaurant" asp-route-id="@Model.RestaurantId" class="btn btn-primary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create</button>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index" asp-controller="Home">Back to Home Page</a>
 </div>
 
 @section Scripts {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Restaurant.BusinessLogic.Implementation.Tables;
 using Restaurant.BusinessLogic.Implementation.Tables.Models;
 using Restaurant.Web.Code.Base;
@@ -19,15 +20,19 @@ namespace Restaurant.Web.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         [HttpGet]
-        public IActionResult CreateTable(Guid id)
+        public async Task<IActionResult> CreateTable(Guid id)
         {
             var model = new TableModel();
             model.RestaurantId = id;
 
+            await Service.CheckForOwner(id);
+
             return View("CreateTable", model);
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         [HttpPost]
         public async Task<IActionResult> CreateTable(TableModel model)
         {

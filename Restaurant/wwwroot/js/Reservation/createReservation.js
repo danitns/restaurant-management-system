@@ -10,14 +10,9 @@ const fetchSelectOptions = async (date, numberOfGuests, restaurantId) => {
     }
 }
 
-const populateSelect = async () => {
+const populateSelect = async (date, numberOfGuests) => {
     const timeSelect = document.getElementById('timeSelect');
-    const numberOfGuestsInput = document.getElementById('numberOfGuestsInput');
-    const dateInput = document.getElementById('dateInput');
     const restaurantIdInput = document.getElementById('restaurantIdInput');
-
-    const numberOfGuests = numberOfGuestsInput.value;
-    const date = dateInput.value;
     const restaurantId = restaurantIdInput.value;
 
     const timeOptions = await fetchSelectOptions(date, numberOfGuests, restaurantId);
@@ -32,11 +27,16 @@ const populateSelect = async () => {
     }
 }
 
-const findAvailableHours = async () => {
-    const button = document.getElementById('findButton');
-    button.addEventListener('click', async () => {
-        await populateSelect();
+const findAvailableHours = async (dateInput, numberOfGuestsInput) => {
+    populateSelect(dateInput.value, numberOfGuestsInput.value);
+    dateInput.addEventListener('change', async() => {
+        await populateSelect(dateInput.value, numberOfGuestsInput.value);
+    })
+    numberOfGuestsInput.addEventListener('change', async () => {
+        await populateSelect(dateInput.value, numberOfGuestsInput.value);
     })
 }
+const reservationDateInput = document.getElementById('dateInput');
+const reservationNumberOfGuestsInput = document.getElementById('numberOfGuestsInput');
 
-findAvailableHours();
+findAvailableHours(reservationDateInput, reservationNumberOfGuestsInput);

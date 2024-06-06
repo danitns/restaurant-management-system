@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Restaurant.BusinessLogic.Implementation.Restaurants;
 using Restaurant.Web.Code.Base;
 
@@ -18,7 +19,8 @@ namespace Restaurant.Web.Controllers
 			return View(restaurants);
 		}
 
-		[HttpGet]
+        [Authorize(Roles = "Admin,Manager")]
+        [HttpGet]
 		public IActionResult Create()
 		{
 			var model = new CreateRestaurantModel();
@@ -29,7 +31,8 @@ namespace Restaurant.Web.Controllers
 			return View(model);
 		}
 
-		[HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
+        [HttpPost]
 		public async Task<IActionResult> Create(CreateRestaurantModel model)
 		{
 			await Service.CreateRestaurant(model);

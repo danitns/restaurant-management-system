@@ -15,5 +15,7 @@ public class TableProfile : Profile
     {
         CreateMap<TableModel, Table>()
             .ForMember(a => a.Id, a => a.MapFrom(s => Guid.NewGuid()));
+
+        CreateMap<Table, TableModel>();
     }
 }

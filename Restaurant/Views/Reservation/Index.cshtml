@@ -4,59 +4,51 @@
 	ViewData["Title"] = "Reservation";
 }
 
-<h1>Your Reservations</h1>
-
-<div class="container">
-	<div>
-		<h2>Upcoming reservations</h2>
-		<br />
+<div class="row bg-light p-5">
+	<div class="row register-card p-0 shadow-lg my-2">
+		<h1 class="p-2 ms-3">Upcoming reservations</h1>
+		<hr />
 		@if (Model.Where(r => r.Date > DateTime.Now).Any())
 		{
 			foreach (var reservation in @Model)
 			{
-				<div class="row">
-					<div class="col-3">
-						<img class="card-img-top-container" src="data:image/png;base64,@Convert.ToBase64String(reservation.RestaurantPicture)" />
-					</div>
-					<div class="col-9">
-						<div class="row">
-							@reservation.RestaurantName
+					<div class="row mb-2 border-bottom reservation-card">
+
+						<div class="col-4 h-100 p-0 p-2">
+							<img class="restaurant-card-img" src="data:image/png;base64,@Convert.ToBase64String(reservation.RestaurantPicture)" alt="" />
 						</div>
-						<div class="row">
-							@reservation.Address
-						</div>
-						<div class="row">
-							@reservation.Date
+						<div class="col-8 p-3 d-flex justify-content-around flex-column">
+						<h3 class="secondary-heading">Restaurant name: @reservation.RestaurantName</h3>
+							<div class="row ps-0">
+								<p><i class="bi bi-compass"></i> Address: @reservation.Address</p>
+								<p><i class="bi bi-clock"></i> Date and time: @reservation.Date</p>
+							</div>
 						</div>
 					</div>
-				</div>
 			}
 		}
 		else
 		{
-			<p>You have no upcoming reservations. Go to <a asp-action="Index" asp-controller="Restaurant">restaurants</a></p>
+			<p class="ms-3">You have no upcoming reservations. Go to <a class="link-a" asp-action="Index" asp-controller="Restaurant">restaurants</a></p>
 		}
 	</div>
-	<div>
-		<h2>Past reservations</h2>
-		<br />
+	<div class="row register-card p-0 shadow-lg my-2">
+		<h1 class="p-2 ms-3">Past reservations</h1>
+		<hr />
 		@if (Model.Where(r => r.Date <= DateTime.Now).Any())
 		{
 			foreach (var reservation in @Model)
 			{
-				<div class="row">
-					<div class="col-3">
-						<img class="card-img-top-container" src="data:image/png;base64,@Convert.ToBase64String(reservation.RestaurantPicture)" />
+				<div class="row mb-2 border-bottom reservation-card">
+
+					<div class="col-4 h-100 p-0 p-2">
+						<img class="restaurant-card-img" src="data:image/png;base64,@Convert.ToBase64String(reservation.RestaurantPicture)" alt="" />
 					</div>
-					<div class="col-9">
-						<div class="row">
-							@reservation.RestaurantName
-						</div>
-						<div class="row">
-							@reservation.Address
-						</div>
-						<div class="row">
-							@reservation.Date
+					<div class="col-8 p-3 d-flex justify-content-around flex-column">
+						<h3 class="secondary-heading">@reservation.RestaurantName</h3>
+						<div class="row ps-0">
+							<p><i class="bi bi-compass"></i> Address: @reservation.Address</p>
+							<p><i class="bi bi-clock"></i> Date and time: @reservation.Date</p>
 						</div>
 					</div>
 				</div>
@@ -64,7 +56,7 @@
 		}
 		else
 		{
-			<p>You have no upcoming reservations. Go to <a asp-action="Index" asp-controller="Restaurant">restaurants</a></p>
+			<p class="ms-3">You have no past reservations.</p>
 		}
 	</div>
 </div>

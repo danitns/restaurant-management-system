@@ -1,4 +1,5 @@
-﻿using Restaurant.BusinessLogic.Implementation.Users;
+﻿using Restaurant.BusinessLogic.Implementation.Restaurants;
+using Restaurant.BusinessLogic.Implementation.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,7 @@ namespace Restaurant.BusinessLogic.Implementation.Admin
 	public class AdminDashboardModel
 	{
         public List<DetailsUserModel> PendingManagers { get; set; } = new List<DetailsUserModel>();
+
+		public List<RestaurantAndReservations> RestaurantTop { get; set; } = new(); 
     }
 }

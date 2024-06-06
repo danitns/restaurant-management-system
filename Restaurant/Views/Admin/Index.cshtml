@@ -1,28 +1,48 @@
 ﻿@model Restaurant.BusinessLogic.Implementation.Admin.AdminDashboardModel
 
+<div class="row h-100 main-background-color pt-5">
+    <div class="col-md-6 px-3">
+        <div class="register-card shadow">
+            <h1 class="text-center mt-3">Manager requests</h1>
+            <div class="m-auto mt-3 px-3 ">
+                @foreach (var manager in Model.PendingManagers)
+                {
+                    <div class="col-md-3 border p-2 my-2 rounded">
+                        <p>@manager.FirstName @manager.LastName</p>
+                        <p>@manager.Email</p>
+                        <p>@manager.Phone</p>
+                        <span>
+                            <a class="btn btn-primary" asp-action="UpdateUserRole" asp-controller="Admin" asp-route-userId="@manager.Id" asp-route-isApproved="true">Accept</a>
+                            <a class="btn btn-primary" asp-action="UpdateUserRole" asp-controller="Admin" asp-route-userId="@manager.Id" asp-route-isApproved="false">Reject</a>
+                        </span>
 
-<h1>Admin Dashboard</h1>
+                    </div>
+                }
+            </div>
+        </div>
 
-<div class="container">
-	<div class="row">
-		<div class="col-6">
-			<h2>Manager requests</h2>
-			@foreach (var manager in Model.PendingManagers)
-			{
-				<div>
-					<p>@manager.FirstName @manager.LastName</p>
-					<p>@manager.Email</p>
-					<p>@manager.Phone</p>
-					<span>
-						<a class="btn btn-primary" asp-action="UpdateUserRole" asp-controller="Admin" asp-route-userId="@manager.Id" asp-route-isApproved="true">Accept</a>
-						<a class="btn btn-primary" asp-action="UpdateUserRole" asp-controller="Admin" asp-route-userId="@manager.Id" asp-route-isApproved="false">Reject</a>
-					</span>
 
-				</div>
-			}
-		</div>
-		<div class="col-6">
-			<h2>Restaurants with most reservations</h2>
-		</div>
-	</div>
+    </div>
+    <div class="col-md-6 px-3">
+        <div class="register-card shadow" style="max-height: 600px; overflow-y: scroll">
+            <h1 class="text-center mt-3">Resturants</h1>
+            <div class="m-auto mt-5 px-5">
+                @foreach (var restaurant in Model.RestaurantTop)
+                {
+                    <div class="row my-2 border-top p-3">
+                        <div class="col-4">
+                            <h5>@restaurant.Name</h5>
+                        </div>
+                        <div class="col-4 text-center">
+                            <p>@restaurant.NumberOfReservations</p>
+                        </div>
+                        <div class="col-4 d-flex justify-content-end">
+                            <a asp-action="Details" asp-controller="Restaurant" class="btn btn-outline-secondary" asp-route-id="@restaurant.Id">View</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>
+

@@ -11,7 +11,6 @@
 	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
 	<link rel="stylesheet" href="~/css/dualRangeSlider.css" asp-append-version="true" />
-	<link rel="stylesheet" href="~/Restaurant.styles.css" asp-append-version="true" />
 </head>
 <body>
 	<div class="d-flex flex-row h-100">
@@ -41,12 +40,15 @@
 							Reservations
 						</a>
 					</li>
-					<li class="nav-item">
-						<a asp-action="Index" asp-controller="Admin" class="nav-link text-white">
-							<i class="bi bi-speedometer2"></i>
-							Admin Dashboard
-						</a>
-					</li>
+					@if (CurrentUser.Role == "Admin")
+					{
+						<li class="nav-item">
+							<a asp-action="Index" asp-controller="Admin" class="nav-link text-white">
+								<i class="bi bi-speedometer2"></i>
+								Admin Dashboard
+							</a>
+						</li>
+					}
 				}
 			</ul>
 			<hr>

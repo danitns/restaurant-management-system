@@ -88,13 +88,17 @@ public class ProductService : BaseService
             productsQuery = productsQuery.Where(e => e.SubcategoryId == FilterModel.SubcategoryId);
         }
         
-        if(FilterModel.MaxPrice == null)
+        if(FilterModel.MaxPrice == null || FilterModel.MaxPrice == 0)
         {
-            var maxPrice = await UnitOfWork.Products.Get().Where(p => p.RestaurantId == restaurantId).MaxAsync(p => p.Price);
-            FilterModel.MaxPrice = ((int)maxPrice);
+			var maxPrice = await UnitOfWork.Products.Get()
+	            .Where(p => p.RestaurantId == restaurantId)
+	            .Select(p => (decimal?)p.Price)
+	            .DefaultIfEmpty() 
+	            .MaxAsync();
+			FilterModel.MaxPrice = maxPrice.HasValue ? (int)Math.Ceiling(maxPrice.Value) : 0;
         }
 
-        if (FilterModel.MaxPriceFilter == null)
+        if (FilterModel.MaxPriceFilter == null || FilterModel.MaxPriceFilter == 0)
         {
             FilterModel.MaxPriceFilter = FilterModel.MaxPrice;
         }
@@ -148,5 +152,28 @@ public class ProductService : BaseService
     public FilterProductModel GetFiltersAndCurrentPage()
     {
         return FilterModel;
+    }
+
+    public async Task CheckForOwner(Guid restaurantId)
+    {
+        var restaurant = await UnitOfWork
+            .Restaurants
+            .Get()
+            .SingleOrDefaultAsync(r => r.Id == restaurantId);
+
+        if(restaurant == null)
+        {
+            throw new NotFoundErrorException();
+        }
+
+        if(restaurant.UserId != CurrentUser.Id && CurrentUser.Role != "Admin")
+        {
+            throw new AccessViolationException();
+        }
+    }
+
+    public async Task<bool> IsMyRestaurant(Guid id)
+    {
+        return CurrentUser.Id == await UnitOfWork.Restaurants.Get().Where(r => r.Id == id).Select(r => r.UserId).SingleOrDefaultAsync();
     }
 }
