@@ -1,10 +1,15 @@
 use restaurant;
 
+drop table if exists UserBenefit;
+drop table if exists Benefit;
+drop table if exists ProductReview;
+drop table if exists Review;
 drop table if exists Reservation;
 drop table if exists [Table];
 drop table if exists Product;
 drop table if exists Subcategory;
 drop table if exists Category;
+drop table if exists RestaurantSchedule;
 drop table if exists Restaurant;
 drop table if exists RestaurantType;
 drop table if exists City;
@@ -27,6 +32,7 @@ create table [User] (
 	PasswordHash uniqueidentifier not null,
 	Phone nvarchar(15) not null,
 	Birthdate date not null,
+	Points int not null default(0),
 	constraint FK_USER_ROLE foreign key (RoleId) references [Role](Id),
 	constraint UQ_USER_EMAIL unique(Email),
 	constraint UQ_USER_PHONE unique(Phone)
@@ -110,8 +116,46 @@ create table Reservation (
 	Phone nvarchar(15),
 	TableId uniqueidentifier,
 	[Date] datetime not null,
+	[Status] int not null default(0),
+	TotalAmount int,
 	constraint FK_RESERVATION_USER foreign key (UserId) references [User](Id),
 	constraint FK_RESERVATION_TABLE foreign key (TableId) references [Table](Id)
+)
+
+create table Review(
+	Id uniqueidentifier primary key,
+	Rating int not null,
+	[Text] nvarchar(500) not null
+	constraint FK_REVIEW_RESERVATION foreign key (Id) references Reservation(Id)
+)
+
+create table ProductReview(
+	Id uniqueidentifier primary key,
+	ReviewId uniqueidentifier,
+	ProductId uniqueidentifier,
+	ImageContent varbinary(max),
+	Quantity int,
+	constraint FK_PRODUCTREVIEW_REVIEW foreign key (ReviewId) references Review(Id),
+	constraint FK_PRODUCTREVIEW_PRODUCT foreign key (ProductId) references Product(Id)
+)
+
+create table Benefit(
+	Id uniqueidentifier primary key,
+	RestaurantId uniqueidentifier,
+	[Name] nvarchar(128) not null,
+	Details nvarchar(500) not null,
+	[Value] int not null,
+	constraint FK_BENEFIT_RESTAURANT foreign key (RestaurantId) references Restaurant(Id)
+)
+
+create table UserBenefit(
+	Id uniqueidentifier primary key,
+	UserId uniqueidentifier,
+	BenefitId uniqueidentifier,
+	ExpiryDate datetime,
+	UsedOn datetime,
+	constraint FK_USERBENEFIT_USER foreign key (UserId) references [User](Id),
+	constraint FK_USERBENEFIT_BENEFIT foreign key (BenefitId) references Benefit(Id)
 )
 
 insert into City values 

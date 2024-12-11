@@ -21,6 +21,8 @@ public partial class Restaurant
 
     public Guid UserId { get; set; }
 
+    public virtual ICollection<Benefit> Benefits { get; set; } = new List<Benefit>();
+
     public virtual City City { get; set; } = null!;
 
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();

@@ -23,9 +23,13 @@ public partial class User
 
     public DateOnly Birthdate { get; set; }
 
+    public int Points { get; set; }
+
     public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 
     public virtual ICollection<Restaurant> Restaurants { get; set; } = new List<Restaurant>();
 
     public virtual Role Role { get; set; } = null!;
+
+    public virtual ICollection<UserBenefit> UserBenefits { get; set; } = new List<UserBenefit>();
 }

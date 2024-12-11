@@ -17,6 +17,8 @@ public partial class Product
 
     public decimal Price { get; set; }
 
+    public virtual ICollection<ProductReview> ProductReviews { get; set; } = new List<ProductReview>();
+
     public virtual Restaurant Restaurant { get; set; } = null!;
 
     public virtual Subcategory Subcategory { get; set; } = null!;
