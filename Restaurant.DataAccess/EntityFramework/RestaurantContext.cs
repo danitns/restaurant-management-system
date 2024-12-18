@@ -54,7 +54,7 @@ public partial class RestaurantContext : DbContext
     {
         modelBuilder.Entity<Benefit>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Benefit__3214EC0776924C37");
+            entity.HasKey(e => e.Id).HasName("PK__Benefit__3214EC073FB43BAE");
 
             entity.ToTable("Benefit");
 
@@ -69,7 +69,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC07A4A818D5");
+            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC07AA00BD26");
 
             entity.ToTable("Category");
 
@@ -81,7 +81,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<City>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__City__3214EC074A4F34B6");
+            entity.HasKey(e => e.Id).HasName("PK__City__3214EC07B32E0EAE");
 
             entity.ToTable("City");
 
@@ -93,7 +93,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Product__3214EC072C4E4507");
+            entity.HasKey(e => e.Id).HasName("PK__Product__3214EC077EDDCF4D");
 
             entity.ToTable("Product");
 
@@ -116,11 +116,12 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<ProductReview>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ProductR__3214EC07BC7C9FA9");
+            entity.HasKey(e => e.Id).HasName("PK__ProductR__3214EC07291642C2");
 
             entity.ToTable("ProductReview");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Text).HasMaxLength(500);
 
             entity.HasOne(d => d.Product).WithMany(p => p.ProductReviews)
                 .HasForeignKey(d => d.ProductId)
@@ -133,7 +134,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Reservation>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC0789622D52");
+            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC0727273D5A");
 
             entity.ToTable("Reservation");
 
@@ -152,7 +153,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Entities.Restaurant>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC076D95D9F4");
+            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC0776D96D99");
 
             entity.ToTable("Restaurant");
 
@@ -180,7 +181,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<RestaurantSchedule>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC078860CE04");
+            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC077837C26E");
 
             entity.ToTable("RestaurantSchedule");
 
@@ -196,7 +197,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<RestaurantType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC070D41BA19");
+            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC07E2CF1E07");
 
             entity.ToTable("RestaurantType");
 
@@ -208,7 +209,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Review>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Review__3214EC07E59C9371");
+            entity.HasKey(e => e.Id).HasName("PK__Review__3214EC0781E0901B");
 
             entity.ToTable("Review");
 
@@ -223,7 +224,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC0782531434");
+            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC07766A514B");
 
             entity.ToTable("Role");
 
@@ -235,7 +236,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Subcategory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Subcateg__3214EC07E602F1D1");
+            entity.HasKey(e => e.Id).HasName("PK__Subcateg__3214EC07F0AB5ED7");
 
             entity.ToTable("Subcategory");
 
@@ -252,7 +253,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Table>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Table__3214EC07D1064555");
+            entity.HasKey(e => e.Id).HasName("PK__Table__3214EC07724C3466");
 
             entity.ToTable("Table");
 
@@ -269,7 +270,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__User__3214EC07D621CD31");
+            entity.HasKey(e => e.Id).HasName("PK__User__3214EC07B02ADE4E");
 
             entity.ToTable("User");
 
@@ -291,7 +292,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<UserBenefit>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__UserBene__3214EC07095835BF");
+            entity.HasKey(e => e.Id).HasName("PK__UserBene__3214EC07E65214F1");
 
             entity.ToTable("UserBenefit");
 

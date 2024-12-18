@@ -1,0 +1,65 @@
+﻿@model Restaurant.BusinessLogic.Implementation.Reservations.ReviewReservationModel
+@{
+    ViewData["Title"] = "Review Reservation";
+}
+
+
+<div class="row p-5">
+    <h2>Review Form for @Model.RestaurantName</h2>
+    <div class="register-card p-1 row shadow-lg">
+        <form asp-action="ReviewReservation" enctype="multipart/form-data">
+            <h4>Overall Reservation Review</h4>
+            <div class="form-group">
+                <input type="hidden" asp-for="@Model.ReservationId" />
+
+                <label for="Text">General Review Text</label>
+                @Html.TextAreaFor(m => m.Text, new { @class = "form-control", rows = "4", placeholder = "Write your general review..." })
+            </div>
+
+            <div class="form-group">
+                <label for="Rating">General Rating</label>
+                @Html.TextBoxFor(m => m.Rating, new { @class = "form-control", type = "number", min = "1", max = "5", placeholder = "Rating (1-5)" })
+            </div>
+
+            <hr />
+
+            <h4>Product Reviews</h4>
+            <div>
+                @for (int i = 0; i < Model.ProductReviews.Count; i++)
+                {
+                    <div class="border p-3 mb-3">
+                        <h5>@Model.ProductReviews[i].ProductName</h5>
+                        <div style="width: 30%">
+                            <img src="data:image/png;base64,@Convert.ToBase64String(Model.ProductReviews[i].ProductPicture)" class="restaurant-card-img" alt="" />
+                        </div>
+                        
+                        @Html.HiddenFor(m => m.ProductReviews[i].Id)
+                        @Html.HiddenFor(m => m.ProductReviews[i].ProductId)
+
+                        <div class="form-group">
+                            <label>Product Review Text</label>
+                            @Html.TextAreaFor(m => m.ProductReviews[i].Text, new { @class = "form-control", rows = "2", placeholder = "Write your product review..." })
+                        </div>
+
+                        <div class="form-group">
+                            <label>Product Rating</label>
+                            @Html.TextBoxFor(m => m.ProductReviews[i].Rating, new { @class = "form-control", type = "number", min = "1", max = "5", placeholder = "Rating (1-5)" })
+                        </div>
+
+                        <div class="form-group">
+                            <label>Upload Product Picture</label>
+                            <input type="file" name="ProductReviews[@i].Picture" class="form-control-file" />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Price</label>
+                            @Html.TextBoxFor(m => m.ProductReviews[i].Price, new { @class = "form-control", type = "text", @readonly = "readonly" })
+                        </div>
+                    </div>
+                }
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Review</button>
+        </form>
+    </div>
+</div>
+

@@ -5,17 +5,21 @@ namespace Restaurant.Entities;
 
 public partial class ProductReview
 {
-    public Guid Id { get; set; }
+	public Guid Id { get; set; }
 
-    public Guid? ReviewId { get; set; }
+	public Guid? ReviewId { get; set; }
 
-    public Guid? ProductId { get; set; }
+	public Guid? ProductId { get; set; }
 
-    public byte[]? ImageContent { get; set; }
+	public byte[]? ImageContent { get; set; }
 
-    public int? Quantity { get; set; }
+	public string? Text { get; set; }
 
-    public virtual Product? Product { get; set; }
+	public int? Rating { get; set; }
 
-    public virtual Review? Review { get; set; }
+	public int? Quantity { get; set; }
+
+	public virtual Product? Product { get; set; }
+
+	public virtual Review? Review { get; set; }
 }

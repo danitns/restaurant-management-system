@@ -124,8 +124,8 @@ create table Reservation (
 
 create table Review(
 	Id uniqueidentifier primary key,
-	Rating int not null,
-	[Text] nvarchar(500) not null
+	Rating int,
+	[Text] nvarchar(500)
 	constraint FK_REVIEW_RESERVATION foreign key (Id) references Reservation(Id)
 )
 
@@ -134,6 +134,8 @@ create table ProductReview(
 	ReviewId uniqueidentifier,
 	ProductId uniqueidentifier,
 	ImageContent varbinary(max),
+	[Text] nvarchar(500),
+	Rating int,
 	Quantity int,
 	constraint FK_PRODUCTREVIEW_REVIEW foreign key (ReviewId) references Review(Id),
 	constraint FK_PRODUCTREVIEW_PRODUCT foreign key (ProductId) references Product(Id)

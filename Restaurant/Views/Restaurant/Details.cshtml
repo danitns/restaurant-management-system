@@ -54,6 +54,12 @@
 						<a asp-action="CreateTable" asp-controller="Table" asp-route-id="@Model.Id" class="btn btn-primary">Add Table</a>
 					</div>
 				}
+				@if (CurrentUser.Role == "Admin" || Model.IsMyRestaurant)
+				{
+					<div class="w-auto">
+						<a asp-action="RestaurantReservations" asp-controller="Reservation" asp-route-id="@Model.Id" class="btn btn-primary">View Reservations</a>
+					</div>
+				}
 			</div>
 		</div>
 	</div>

@@ -20,8 +20,28 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations.Mappings
 			CreateMap<Reservation, ViewReservationModel>()
 				.ForMember(a => a.RestaurantName, a => a.MapFrom(s => s.Table.Restaurant.Name))
 				.ForMember(a => a.Address, a => a.MapFrom(s => s.Table.Restaurant.Address))
-				.ForMember(a => a.RestaurantPicture, a => a.MapFrom(s => s.Table.Restaurant.Picture));
-        }
+				.ForMember(a => a.RestaurantPicture, a => a.MapFrom(s => s.Table.Restaurant.Picture))
+				.ForMember(a => a.RestaurantId, a => a.MapFrom(s => s.Table.RestaurantId))
+				.ForMember(a => a.TotalPrice, a => a.MapFrom(s => s.TotalAmount))
+				.ForMember(a => a.Rating, a => a.MapFrom(s => s.Review.Rating))
+				.ForMember(a => a.TableName, a => a.MapFrom(s => s.Table.Name));
+
+			CreateMap<Review, ReviewReservationModel>()
+				.ForMember(a => a.RestaurantName, a => a.MapFrom(s => s.IdNavigation.Table.Restaurant.Name))
+				.ForMember(a => a.ReservationId, a => a.MapFrom(s => s.Id))
+				.ForMember(a => a.Text, a => a.Ignore())
+				.ForMember(a => a.Rating, a => a.Ignore())
+				.ForMember(a => a.ProductReviews, a => a.Ignore());
+
+			CreateMap<ProductReview, ReviewProductModel>()
+				.ForMember(a => a.ProductId, a => a.MapFrom(s => s.ProductId))
+                .ForMember(a => a.ProductName, a => a.MapFrom(s => s.Product.Name))
+                .ForMember(a => a.Price, a => a.MapFrom(s => s.Product.Price))
+                .ForMember(a => a.Picture, a => a.Ignore())
+				.ForMember(a => a.Text, a => a.Ignore())
+				.ForMember(a => a.Rating, a => a.Ignore())
+				.ForMember(a => a.ProductPicture, a => a.MapFrom(s => s.Product.Picture));
+		}
 
 		private DateTime CombineDateTime(DateOnly date, string timeAsString)
 		{

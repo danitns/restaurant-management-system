@@ -39,6 +39,9 @@ namespace Restaurant.DataAccess
         private IRepository<Reservation> reservations;
         public IRepository<Reservation> Reservations => reservations ?? (reservations = new BaseRepository<Reservation>(Context));
 
+        private IRepository<Review> reviews;
+        public IRepository<Review> Reviews => reviews ?? (reviews = new BaseRepository<Review>(Context));
+
 
         private IRepository<Role> roles;
         public IRepository<Role> Roles => roles ?? (roles = new BaseRepository<Role>(Context));

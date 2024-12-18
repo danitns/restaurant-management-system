@@ -17,8 +17,10 @@ namespace Restaurant.BusinessLogic.Implementation.Tables.Validations
         {
             RuleFor(t => t.Name)
                 .NotEmpty().WithMessage("Please enter the nanme of the table")
-                .Must(NotAlreadyExistTable).WithMessage("Table already exists")
                 .Length(5, 40).WithMessage("Length between 5 and 40 characters");
+
+            RuleFor(t => t)
+                .Must(NotAlreadyExistTable).WithMessage("Table already exists for this restaurant");
 
             RuleFor(t => t.Seats)
                 .NotEmpty().WithMessage("Please enter the number of seats.")
@@ -27,9 +29,9 @@ namespace Restaurant.BusinessLogic.Implementation.Tables.Validations
             _unitOfWork = unitOfWork;
         }
 
-        public bool NotAlreadyExistTable(string name)
+        public bool NotAlreadyExistTable(TableModel table)
         {
-            var tablesWithTheSameName = !_unitOfWork.Tables.Get().Any(t => t.Name == name);
+            var tablesWithTheSameName = !_unitOfWork.Tables.Get().Any(t => t.Name == table.Name && t.RestaurantId == table.RestaurantId);
             return tablesWithTheSameName;
         }
 

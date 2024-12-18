@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<Restaurant.BusinessLogic.Implementation.Reservations.ViewReservationModel>
+@using Restaurant.Entities.Enums
 
 @{
 	ViewData["Title"] = "Reservation";
@@ -10,7 +11,7 @@
 		<hr />
 		@if (Model.Where(r => r.Date > DateTime.Now).Any())
 		{
-			foreach (var reservation in @Model)
+			foreach (var reservation in @Model.Where(r => r.Date > DateTime.Now).ToList())
 			{
 					<div class="row mb-2 border-bottom reservation-card">
 
@@ -37,7 +38,7 @@
 		<hr />
 		@if (Model.Where(r => r.Date <= DateTime.Now).Any())
 		{
-			foreach (var reservation in @Model)
+			foreach (var reservation in @Model.Where(r => r.Date <= DateTime.Now).ToList())
 			{
 				<div class="row mb-2 border-bottom reservation-card">
 
@@ -49,8 +50,56 @@
 						<div class="row ps-0">
 							<p><i class="bi bi-compass"></i> Address: @reservation.Address</p>
 							<p><i class="bi bi-clock"></i> Date and time: @reservation.Date</p>
+							@if (reservation.Status == (int)ReservationStatusTypes.Reviewed)
+							{
+								<p><i class="bi bi-star"></i> Rating: @reservation.Rating</p>
+								<p><i class="bi bi-money"></i> Total Amount: @reservation.TotalPrice RON</p>
+							}
 						</div>
+						@if (reservation.Status == (int)ReservationStatusTypes.Completed)
+						{
+							<div>Review your experience and get a 10% bonus on your loyalty points</div>
+							<a asp-action="ReviewReservation" asp-controller="Reservation" asp-route-id="@reservation.Id" class="btn btn-primary">Review your experience</a>
+						}
+						@if (reservation.Status == (int)ReservationStatusTypes.Reviewed && reservation.TotalPrice >= 100)
+						{
+							<button class="btn btn-outline-primary" type="button" data-bs-toggle="modal" data-bs-target="#wheelOfFortune">Spin the wheel</button>
+							<div class="modal fade" id="wheelOfFortune" tabindex="-1" aria-labelledby="wheelOfFortuneModalLabel" aria-hidden="true">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="wheelOfFortuneModalLabel">Spin the wheel</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+										</div>
+										<div class="modal-body">
+
+											<fieldset class="ui-wheel-of-fortune">
+												<ul>
+													<li>10% discount</li>
+													<li>no discount</li>
+													<li>20% discount</li>
+													<li>no discount</li>
+													<li>30% discount</li>
+													<li>no discount</li>
+													<li>40% discount</li>
+													<li>50% discount</li>
+													<li>no discount</li>
+													<li>free drink</li>
+													<li>free side</li>
+													<li>free dessert</li>
+												</ul>
+												<button type="button">SPIN</button>
+											</fieldset>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						}
 					</div>
+					
 				</div>
 			}
 		}
@@ -66,4 +115,39 @@
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	}
 }
+<script type="text/javascript">
+	function wheelOfFortune(selector) {
+		const node = document.querySelector(selector);
+		if (!node) return;
 
+		const spin = node.querySelector('button');
+		const wheel = node.querySelector('ul');
+		let animation;
+		let previousEndDegree = 0;
+
+		spin.addEventListener('click', () => {
+			if (animation) {
+				animation.cancel(); // Reset the animation if it already exists
+			}
+
+			const randomAdditionalDegrees = Math.random() * 360 + 1800;
+			const newEndDegree = previousEndDegree + randomAdditionalDegrees;
+
+			animation = wheel.animate([
+				{ transform: `rotate(${previousEndDegree}deg)` },
+				{ transform: `rotate(${newEndDegree}deg)` }
+			], {
+				duration: 4000,
+				direction: 'normal',
+				easing: 'cubic-bezier(0.440, -0.205, 0.000, 1.130)',
+				fill: 'forwards',
+				iterations: 1
+			});
+
+			previousEndDegree = newEndDegree;
+		});
+	}
+
+	// Usage
+	wheelOfFortune('.ui-wheel-of-fortune');
+</script>

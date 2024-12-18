@@ -19,6 +19,13 @@ namespace Restaurant.Web.Controllers
 			return View(restaurants);
 		}
 
+		[Authorize(Roles = "Admin,Manager")]
+		public async Task<IActionResult> OwnedRestaurants()
+		{
+			var restaurants = await Service.GetRestaurantsByManager();
+			return View(restaurants);
+		}
+
         [Authorize(Roles = "Admin,Manager")]
         [HttpGet]
 		public IActionResult Create()

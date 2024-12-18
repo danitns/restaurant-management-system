@@ -27,6 +27,13 @@
                 City:
                 <select asp-items="Html.GetEnumSelectList<Cities>()" name="CityId" id="cityIdSelect" class="form-select"></select>
             </label>
+            @if (CurrentUser.Role == "Admin" || CurrentUser.Role == "Manager")
+            {
+                <label class="form-check-label">
+                    My restaurants:
+                    <input type="checkbox" name="IsMine" id="isMineCheckbox" class="form-check-input" value="false"></input>
+                </label>
+            }
             <div class="text-center mt-4">
                 <a class="btn btn-primary" type="button" id="filterButton">Filter <i class="bi bi-funnel"></i></a>
             </div>
@@ -112,11 +119,18 @@
         [
             {
                 name: 'typeId',
-                inputId: 'typeIdSelect'
+                inputId: 'typeIdSelect',
+                valueType: 'value'
             },
             {
                 name: 'cityId',
-                inputId: 'cityIdSelect'
+                inputId: 'cityIdSelect',
+                valueType: 'value'
+            },
+            {
+                name: 'isMine',
+                inputId: 'isMineCheckbox',
+                valueType: 'checked'
             }
         ]
     );
