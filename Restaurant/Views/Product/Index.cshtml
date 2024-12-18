@@ -74,8 +74,23 @@
                                     <a class="btn btn-danger yesButton" style="display: none" asp-action="Delete" asp-controller="Product" asp-route-id="@product.Id" asp-route-restaurantId="@product.RestaurantId">Yes</a>
                                     <a class="btn btn-primary noButton" style="display: none">No</a>
                                 </div>
+
+                                @if(ViewBag.ReservationId != null)
+                                {
+                                    <label>
+                                        Quantity:
+                                        <input type="number" class="product-quantity" data-product-id="@product.Id" min="0" value="0" />
+                                    </label>
+                                }
                             }
                         </div>
+                    </div>
+                }
+                @if (ViewBag.ReservationId != null)
+                {
+                    <div>
+                        <input type="hidden" class="reservation-id" value="@ViewBag.ReservationId" />
+                        <button id="completeOrderButton" class="btn btn-success">Complete order</button>
                     </div>
                 }
             }
@@ -134,15 +149,18 @@
         [
             {
                 name: 'subcategoryId',
-                inputId: 'subcategoryIdSelect'
+                inputId: 'subcategoryIdSelect',
+                valueType: 'value'
             },
             {
                 name: 'minPrice',
-                inputId: 'fromInput'
+                inputId: 'fromInput',
+                valueType: 'value'
             },
             {
                 name: 'maxPriceFilter',
-                inputId: 'toInput'
+                inputId: 'toInput',
+                valueType: 'value'
             }
         ],
         '@ViewBag.RestaurantId',
@@ -153,4 +171,55 @@
             'toSlider'
         ]
     );
+
+    document.getElementById('completeOrderButton').addEventListener('click', async function () {
+        const reservationId = document.querySelector('.reservation-id')?.value;
+
+        if (!reservationId) {
+            alert("No reservation ID found.");
+            return;
+        }
+
+        const productElements = document.querySelectorAll('.product-quantity');
+        const orderItems = [];
+
+        productElements.forEach(element => {
+            const productId = element.getAttribute('data-product-id');
+            const quantity = parseInt(element.value);
+
+            if (quantity > 0) {
+                orderItems.push({ productId, quantity });
+            }
+        });
+
+        if (orderItems.length === 0) {
+            alert("No products selected for the order.");
+            return;
+        }
+
+        const orderDTO = {
+            reservationId: reservationId,
+            items: orderItems
+        };
+
+        try {
+            const response = await fetch('/Reservation/CompleteOrder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderDTO)
+            });
+
+            if (response.ok) {
+                window.location.href = '/Restaurant/Index';
+            } else {
+                const error = await response.json();
+                alert(`Failed to complete order: ${error.message}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while completing the order.');
+        }
+    });
 </script>

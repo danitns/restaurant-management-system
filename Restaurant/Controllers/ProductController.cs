@@ -16,11 +16,12 @@ public class ProductController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(Guid Id, FilterProductModel? filterModel = null)
+    public async Task<IActionResult> Index(Guid Id, Guid? ReservationId = null, FilterProductModel? filterModel = null)
     {
         var model = await Service.GetProducts(Id, filterModel);
         ViewBag.RestaurantId = Id;
         ViewBag.IsMyRestaurant = await Service.IsMyRestaurant(Id);
+        ViewBag.ReservationId = ReservationId;
 
         return View("Index", model);
     }

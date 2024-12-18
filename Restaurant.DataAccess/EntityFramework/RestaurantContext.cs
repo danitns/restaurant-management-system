@@ -16,11 +16,15 @@ public partial class RestaurantContext : DbContext
     {
     }
 
+    public virtual DbSet<Benefit> Benefits { get; set; }
+
     public virtual DbSet<Category> Categories { get; set; }
 
     public virtual DbSet<City> Cities { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
+
+    public virtual DbSet<ProductReview> ProductReviews { get; set; }
 
     public virtual DbSet<Reservation> Reservations { get; set; }
 
@@ -30,6 +34,8 @@ public partial class RestaurantContext : DbContext
 
     public virtual DbSet<RestaurantType> RestaurantTypes { get; set; }
 
+    public virtual DbSet<Review> Reviews { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<Subcategory> Subcategories { get; set; }
@@ -38,15 +44,32 @@ public partial class RestaurantContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
+    public virtual DbSet<UserBenefit> UserBenefits { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Server=(local);Initial Catalog=Restaurant;Integrated Security=true;TrustServerCertificate=true;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Benefit>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Benefit__3214EC073FB43BAE");
+
+            entity.ToTable("Benefit");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Details).HasMaxLength(500);
+            entity.Property(e => e.Name).HasMaxLength(128);
+
+            entity.HasOne(d => d.Restaurant).WithMany(p => p.Benefits)
+                .HasForeignKey(d => d.RestaurantId)
+                .HasConstraintName("FK_BENEFIT_RESTAURANT");
+        });
+
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC07168FE898");
+            entity.HasKey(e => e.Id).HasName("PK__Category__3214EC07AA00BD26");
 
             entity.ToTable("Category");
 
@@ -58,7 +81,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<City>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__City__3214EC076737D666");
+            entity.HasKey(e => e.Id).HasName("PK__City__3214EC07B32E0EAE");
 
             entity.ToTable("City");
 
@@ -70,7 +93,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Product__3214EC079DB182DB");
+            entity.HasKey(e => e.Id).HasName("PK__Product__3214EC077EDDCF4D");
 
             entity.ToTable("Product");
 
@@ -91,9 +114,27 @@ public partial class RestaurantContext : DbContext
                 .HasConstraintName("FK_PRODUCT_SUBCATEGORY");
         });
 
+        modelBuilder.Entity<ProductReview>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__ProductR__3214EC07291642C2");
+
+            entity.ToTable("ProductReview");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Text).HasMaxLength(500);
+
+            entity.HasOne(d => d.Product).WithMany(p => p.ProductReviews)
+                .HasForeignKey(d => d.ProductId)
+                .HasConstraintName("FK_PRODUCTREVIEW_PRODUCT");
+
+            entity.HasOne(d => d.Review).WithMany(p => p.ProductReviews)
+                .HasForeignKey(d => d.ReviewId)
+                .HasConstraintName("FK_PRODUCTREVIEW_REVIEW");
+        });
+
         modelBuilder.Entity<Reservation>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC079720C6EC");
+            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC0727273D5A");
 
             entity.ToTable("Reservation");
 
@@ -112,7 +153,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Entities.Restaurant>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC070AC1B699");
+            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC0776D96D99");
 
             entity.ToTable("Restaurant");
 
@@ -140,7 +181,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<RestaurantSchedule>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC07E9102985");
+            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC077837C26E");
 
             entity.ToTable("RestaurantSchedule");
 
@@ -156,7 +197,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<RestaurantType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC075327602D");
+            entity.HasKey(e => e.Id).HasName("PK__Restaura__3214EC07E2CF1E07");
 
             entity.ToTable("RestaurantType");
 
@@ -166,9 +207,24 @@ public partial class RestaurantContext : DbContext
             entity.Property(e => e.Name).HasMaxLength(255);
         });
 
+        modelBuilder.Entity<Review>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Review__3214EC0781E0901B");
+
+            entity.ToTable("Review");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Text).HasMaxLength(500);
+
+            entity.HasOne(d => d.IdNavigation).WithOne(p => p.Review)
+                .HasForeignKey<Review>(d => d.Id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_REVIEW_RESERVATION");
+        });
+
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC07401BBD05");
+            entity.HasKey(e => e.Id).HasName("PK__Role__3214EC07766A514B");
 
             entity.ToTable("Role");
 
@@ -180,7 +236,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Subcategory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Subcateg__3214EC07A8B792D1");
+            entity.HasKey(e => e.Id).HasName("PK__Subcateg__3214EC07F0AB5ED7");
 
             entity.ToTable("Subcategory");
 
@@ -197,7 +253,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<Table>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Table__3214EC072B4B955A");
+            entity.HasKey(e => e.Id).HasName("PK__Table__3214EC07724C3466");
 
             entity.ToTable("Table");
 
@@ -214,7 +270,7 @@ public partial class RestaurantContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__User__3214EC07DF79E36E");
+            entity.HasKey(e => e.Id).HasName("PK__User__3214EC07B02ADE4E");
 
             entity.ToTable("User");
 
@@ -232,6 +288,25 @@ public partial class RestaurantContext : DbContext
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_USER_ROLE");
+        });
+
+        modelBuilder.Entity<UserBenefit>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__UserBene__3214EC07E65214F1");
+
+            entity.ToTable("UserBenefit");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.ExpiryDate).HasColumnType("datetime");
+            entity.Property(e => e.UsedOn).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Benefit).WithMany(p => p.UserBenefits)
+                .HasForeignKey(d => d.BenefitId)
+                .HasConstraintName("FK_USERBENEFIT_BENEFIT");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserBenefits)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_USERBENEFIT_USER");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 using Restaurant.BusinessLogic.Base;
 using Restaurant.Common.Exceptions;
 using Restaurant.Common.Extensions;
@@ -78,6 +79,16 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
 			return FilterModel;
         }
 
+		public async Task<List<ViewRestaurantModel>> GetRestaurantsByManager()
+		{
+			var restaurants = await UnitOfWork.Restaurants
+				.Get()
+				.Where(r => r.UserId == CurrentUser.Id)
+				.ProjectTo<ViewRestaurantModel>(Mapper.ConfigurationProvider)
+				.ToListAsync();
+			return restaurants;
+		}
+
         public async Task<List<ViewRestaurantModel>> GetRestaurants(FilterRestaurantModel? filterModel)
 		{
 			var restaurantsQuery = UnitOfWork.Restaurants
@@ -93,6 +104,11 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
 				if(filterModel.TypeId.HasValue)
 				{
 					FilterModel.TypeId = filterModel.TypeId.Value;
+				}
+
+				if(filterModel.IsMine.HasValue)
+				{
+					FilterModel.IsMine = filterModel.IsMine;
 				}
 
 				if(filterModel.CurrentPage != 0 && filterModel.CurrentPage != 1 && filterModel.CurrentPage != -1)
@@ -113,6 +129,11 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
             if (FilterModel.TypeId != 0)
             {
                 restaurantsQuery = restaurantsQuery.Where(e => e.RestaurantTypeId == FilterModel.TypeId);
+            }
+
+			if (FilterModel.IsMine == true)
+			{
+                restaurantsQuery = restaurantsQuery.Where(e => e.UserId == CurrentUser.Id);
             }
 
 			if(FilterModel.CurrentPage < 1)

@@ -12,5 +12,6 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
     {
         public int? CityId { get; set; } = (int)Cities.All;
         public int? TypeId {  get; set; } = (int)RestaurantTypeEnum.All;
+        public bool? IsMine { get; set; } = false;
     }
 }

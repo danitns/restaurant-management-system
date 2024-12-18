@@ -15,9 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Restaurant.BusinessLogic", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Restaurant.DataAccess", "Restaurant.DataAccess\Restaurant.DataAccess.csproj", "{3C72B87B-D073-4C70-99D1-86E0CD606E72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restaurant.Entities", "Restaurant.Entities\Restaurant.Entities.csproj", "{D075A877-FEE5-4C67-A0BE-3F8FB14AF391}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Restaurant.Entities", "Restaurant.Entities\Restaurant.Entities.csproj", "{D075A877-FEE5-4C67-A0BE-3F8FB14AF391}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restaurant.Common", "Restaurant.Common\Restaurant.Common.csproj", "{669B4712-45BA-403F-B2E7-1CABEDC705D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Restaurant.Common", "Restaurant.Common\Restaurant.Common.csproj", "{669B4712-45BA-403F-B2E7-1CABEDC705D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

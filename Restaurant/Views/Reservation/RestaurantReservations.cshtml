@@ -1,0 +1,108 @@
+﻿@model IEnumerable<Restaurant.BusinessLogic.Implementation.Reservations.ViewReservationModel>
+@using Restaurant.Entities.Enums
+
+@{
+	ViewData["Title"] = "Reservation";
+}
+
+<div class="row bg-light p-5">
+	<div class="row register-card p-0 shadow-lg my-2">
+		<h1 class="p-2 ms-3">Upcoming reservations</h1>
+		<hr />
+		@if (Model.Where(r => DateTime.Now < r.Date).Any())
+		{
+			foreach (var reservation in @Model.Where(r => DateTime.Now < r.Date).ToList())
+			{
+				<div class="row mb-2 border-bottom reservation-card">
+
+					<div class="col-4 h-100 p-0 p-2">
+						<img class="restaurant-card-img" src="data:image/png;base64,@Convert.ToBase64String(reservation.RestaurantPicture)" alt="" />
+					</div>
+					<div class="col-8 p-3 d-flex justify-content-around flex-column">
+						<h3 class="secondary-heading">Restaurant name: @reservation.RestaurantName</h3>
+						<div class="row ps-0">
+							<p><i class="bi bi-compass"></i> Address: @reservation.Address</p>
+							<p><i class="bi bi-clock"></i> Date and time: @reservation.Date</p>
+							<p><i class="bi bi-columns-gap"></i> Table: @reservation.TableName</p>
+						</div>
+					</div>
+				</div>
+			}
+		}
+		else
+		{
+			<p class="ms-3">There are no upcoming reservations. Go to <a class="link-a" asp-action="Index" asp-controller="Restaurant">restaurants</a></p>
+		}
+	</div>
+	<div class="row register-card p-0 shadow-lg my-2">
+		<h1 class="p-2 ms-3">Ongoing reservations</h1>
+		<hr />
+		@if (Model.Where(r => DateTime.Now > r.Date && DateTime.Now < r.Date.AddHours(2)).Any())
+		{
+			foreach (var reservation in @Model.Where(r => DateTime.Now > r.Date && DateTime.Now < r.Date.AddHours(2)).ToList())
+			{
+				<div class="row mb-2 border-bottom reservation-card">
+
+					<div class="col-4 h-100 p-0 p-2">
+						<img class="restaurant-card-img" src="data:image/png;base64,@Convert.ToBase64String(reservation.RestaurantPicture)" alt="" />
+					</div>
+					<div class="col-8 p-3 d-flex justify-content-around flex-column">
+						<h3 class="secondary-heading">Restaurant name: @reservation.RestaurantName</h3>
+						<div class="row ps-0">
+							<p><i class="bi bi-compass"></i> Address: @reservation.Address</p>
+							<p><i class="bi bi-clock"></i> Date and time: @reservation.Date</p>
+							<p><i class="bi bi-columns-gap"></i> Table: @reservation.TableName</p>
+						</div>						
+						@if (reservation.Status == (int)ReservationStatusTypes.Created)
+						{
+							<a asp-action="Index" asp-controller="Product" asp-route-id="@reservation.RestaurantId" asp-route-reservationId="@reservation.Id" class="btn btn-primary">Edit products</a>
+						}
+					</div>
+				</div>
+			}
+		}
+		else
+		{
+			<p class="ms-3">There are no ongoing reservations. Go to <a class="link-a" asp-action="Index" asp-controller="Restaurant">restaurants</a></p>
+		}
+	</div>
+	<div class="row register-card p-0 shadow-lg my-2">
+		<h1 class="p-2 ms-3">Past reservations</h1>
+		<hr />
+		@if (Model.Where(r => DateTime.Now > r.Date.AddHours(2)).Any())
+		{
+			foreach (var reservation in @Model.Where(r => DateTime.Now > r.Date.AddHours(2)).ToList())
+			{
+				<div class="row mb-2 border-bottom reservation-card">
+
+					<div class="col-4 h-100 p-0 p-2">
+						<img class="restaurant-card-img" src="data:image/png;base64,@Convert.ToBase64String(reservation.RestaurantPicture)" alt="" />
+					</div>
+					<div class="col-8 p-3 d-flex justify-content-around flex-column">
+						<h3 class="secondary-heading">@reservation.RestaurantName</h3>
+						<div class="row ps-0">
+							<p><i class="bi bi-compass"></i> Address: @reservation.Address</p>
+							<p><i class="bi bi-clock"></i> Date and time: @reservation.Date</p>
+							<p><i class="bi bi-columns-gap"></i> Table: @reservation.TableName</p>
+						</div>
+						@if(reservation.Status == (int)ReservationStatusTypes.Created)
+						{
+							<a asp-action="Index" asp-controller="Product" asp-route-id="@reservation.RestaurantId" asp-route-reservationId="@reservation.Id" class="btn btn-primary">Edit products</a>
+						}
+					</div>
+				</div>
+			}
+		}
+		else
+		{
+			<p class="ms-3">There are no past reservations.</p>
+		}
+	</div>
+</div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}
+

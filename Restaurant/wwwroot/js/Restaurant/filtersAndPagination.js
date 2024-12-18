@@ -16,7 +16,7 @@
                     const inputElement = document.getElementById(element.inputId);
 
                     if (inputElement) {
-                        inputElement.value = value;
+                        inputElement[element.valueType] = value;
                     }
                 }
             })
@@ -49,7 +49,7 @@
         }
         inputsIdsAndNames.forEach((element) => {
             const inputElement = document.getElementById(element.inputId);
-            queryString = queryString.concat(`FilterModel.${element.name}=${inputElement.value}&`);
+            queryString = queryString.concat(`FilterModel.${element.name}=${inputElement[element.valueType]}&`);
         })
         queryString = queryString.concat(`FilterModel.CurrentPage=${pageControl.value}`);
         return queryString;
