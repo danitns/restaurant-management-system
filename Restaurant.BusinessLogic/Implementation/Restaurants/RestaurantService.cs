@@ -1,6 +1,8 @@
 ﻿using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Restaurant.BusinessLogic.Base;
+using Restaurant.BusinessLogic.Implementation.Restaurants.Models;
+using Restaurant.BusinessLogic.Implementation.Restaurants.Validations;
 using Restaurant.Common.Exceptions;
 using Restaurant.Common.Extensions;
 using Restaurant.Entities;
@@ -18,9 +20,12 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
 		static private FilterRestaurantModel FilterModel;
 
 		private readonly CreateRestaurantValidator CreateRestaurantValidator;
+		private readonly CreateBenefitValidator CreateBenefitValidator;
+
 		public RestaurantService(ServiceDependencies serviceDependencies) : base(serviceDependencies)
 		{
 			CreateRestaurantValidator = new CreateRestaurantValidator();
+			CreateBenefitValidator = new CreateBenefitValidator();
 			if(FilterModel == null)
 				FilterModel = new FilterRestaurantModel();
 		}
@@ -58,6 +63,7 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
 				.Get()
                 .Include(r => r.Tables)
                 .Include(r => r.RestaurantSchedules)
+				.Include(r => r.Benefits)
 				.SingleOrDefaultAsync(r => r.Id == id);
 
 			if(restaurant == null)
@@ -70,6 +76,11 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
 			var mappedRestaurant = Mapper.Map<Entities.Restaurant, ViewRestaurantModel>(restaurant);
 
 			mappedRestaurant.IsMyRestaurant = CurrentUser.Id == restaurant.UserId;
+
+			if(mappedRestaurant.IsMyRestaurant)
+			{
+				mappedRestaurant.Benefits = restaurant.Benefits.AsQueryable().ProjectTo<ViewBenefitModel>(Mapper.ConfigurationProvider).ToList();
+			}
 
 			return mappedRestaurant;
         }
@@ -165,5 +176,60 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
             return restaurants;
 		}
 
+        public async Task CreateBenefit(CreateBenefitModel model)
+        {
+			CreateBenefitValidator.Validate(model).ThenThrow(model);
+			var benefit = Mapper.Map<Benefit>(model);
+
+
+			UnitOfWork.Benefits.Insert(benefit);
+			await UnitOfWork.SaveChangesAsync();
+        }
+
+		public async Task AssignBenefit(Guid? id, Guid? reservationId)
+		{
+			if(reservationId == null)
+			{
+				throw new NotFoundErrorException();
+			}
+
+			if(id != null)
+			{
+
+				var benefit = await UnitOfWork.Benefits
+					.Get()
+					.SingleOrDefaultAsync(b => b.Id == id);
+
+				if (benefit == null)
+				{
+					throw new NotFoundErrorException();
+				}
+
+				var userBenefit = new UserBenefit
+				{
+					Id = Guid.NewGuid(),
+					BenefitId = benefit.Id,
+					ExpiryDate = DateTime.UtcNow.AddMonths(1),
+					UserId = CurrentUser.Id,
+				};
+
+				UnitOfWork.UserBenefits.Insert(userBenefit);
+			}
+
+			var reservation = await UnitOfWork.Reservations
+				.Get()
+				.SingleOrDefaultAsync(r => r.Id == reservationId);
+
+			if(reservation == null)
+			{
+				throw new NotFoundErrorException();
+			}
+
+			reservation.Status = (int)ReservationStatusTypes.Rewarded;
+			UnitOfWork.Reservations.Update(reservation);
+
+
+			await UnitOfWork.SaveChangesAsync();
+		}
 	}
 }

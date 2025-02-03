@@ -17,6 +17,10 @@ namespace Restaurant.DataAccess
             Context = context;
         }
 
+        private IRepository<Benefit> benefits;
+        public IRepository<Benefit> Benefits => benefits ?? (benefits = new BaseRepository<Benefit>(Context));
+
+
         private IRepository<City> cities;
         public IRepository<City> Cities => cities ?? (cities = new BaseRepository<City>(Context));
 
@@ -58,7 +62,10 @@ namespace Restaurant.DataAccess
         private IRepository<User> users;
         public IRepository<User> Users => users ?? (users = new BaseRepository<User>(Context));
 
-        public void SaveChanges()
+		private IRepository<UserBenefit> userBenefits;
+		public IRepository<UserBenefit> UserBenefits => userBenefits ?? (userBenefits = new BaseRepository<UserBenefit>(Context));
+
+		public void SaveChanges()
         {
             Context.SaveChanges();
         }

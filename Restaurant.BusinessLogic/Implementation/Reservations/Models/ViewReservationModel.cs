@@ -1,4 +1,5 @@
-﻿using Restaurant.Entities;
+﻿using Restaurant.BusinessLogic.Implementation.Restaurants.Models;
+using Restaurant.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,5 +28,7 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 		public int TotalPrice { get; set; }
 
 		public string TableName { get; set; }
+
+		public List<Benefit> Benefits { get; set; }
     }
 }

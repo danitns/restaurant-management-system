@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Restaurant.BusinessLogic.Implementation.Restaurants;
+using Restaurant.BusinessLogic.Implementation.Restaurants.Models;
 using Restaurant.Entities;
 using Restaurant.Entities.Enums;
 using System;
@@ -35,6 +36,12 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants.Mappings
 
 			CreateMap<Entities.Restaurant, RestaurantAndReservations>()
 				.ForMember(d => d.NumberOfReservations, d => d.MapFrom(s => s.RestaurantSchedules.Count()));
-		}
+
+			CreateMap<CreateBenefitModel, Benefit>()
+				.ForMember(d => d.Id, o => o.MapFrom(s => Guid.NewGuid()))
+				.ForMember(d => d.RestaurantId, o => o.Ignore());
+
+			CreateMap<Benefit, ViewBenefitModel>();
+        }
 	}
 }

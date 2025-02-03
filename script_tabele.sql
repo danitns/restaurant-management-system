@@ -156,6 +156,7 @@ create table UserBenefit(
 	BenefitId uniqueidentifier,
 	ExpiryDate datetime,
 	UsedOn datetime,
+	IsActive bit,
 	constraint FK_USERBENEFIT_USER foreign key (UserId) references [User](Id),
 	constraint FK_USERBENEFIT_BENEFIT foreign key (BenefitId) references Benefit(Id)
 )

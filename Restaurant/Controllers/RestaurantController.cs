@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.BusinessLogic.Implementation.Restaurants;
+using Restaurant.BusinessLogic.Implementation.Restaurants.Models;
 using Restaurant.Web.Code.Base;
 
 namespace Restaurant.Web.Controllers
@@ -53,11 +54,33 @@ namespace Restaurant.Web.Controllers
 			return View(model);
 		}
 
+		[HttpGet]
+		public async Task<IActionResult> CreateBenefit(Guid Id)
+		{
+			var model = new CreateBenefitModel();
+			model.RestaurantId = Id;
+			return View(model);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> CreateBenefit(CreateBenefitModel model)
+		{
+			await Service.CreateBenefit(model);
+			return RedirectToAction("Details", model.RestaurantId);
+		}
+
         [HttpGet]
         public IActionResult GetFiltersAndCurrentPage()
         {
             var filtersAndPagination = Service.GetFiltersAndCurrentPage();
             return Ok(filtersAndPagination);
         }
+
+		[HttpPost]
+		public async Task<IActionResult> AssignBenefit(Guid? id = null, Guid? reservationId = null)
+		{
+			await Service.AssignBenefit(id, reservationId);
+			return Ok();
+		}
     }
 }

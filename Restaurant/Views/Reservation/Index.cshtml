@@ -74,19 +74,16 @@
 										<div class="modal-body">
 
 											<fieldset class="ui-wheel-of-fortune">
+												<input type="hidden" id="@reservation.Id" />
 												<ul>
-													<li>10% discount</li>
-													<li>no discount</li>
-													<li>20% discount</li>
-													<li>no discount</li>
-													<li>30% discount</li>
-													<li>no discount</li>
-													<li>40% discount</li>
-													<li>50% discount</li>
-													<li>no discount</li>
-													<li>free drink</li>
-													<li>free side</li>
-													<li>free dessert</li>
+													@foreach(var benefit in reservation.Benefits)
+													{
+														<li id="@benefit.Id">@benefit.Name @benefit.Value</li>
+													}
+													@for (int i = 0; i < 12 - reservation.Benefits.Count(); i++)
+													{
+														<li>Nothing</li>
+													}
 												</ul>
 												<button type="button">SPIN</button>
 											</fieldset>
@@ -115,13 +112,40 @@
 		await Html.RenderPartialAsync("_ValidationScriptsPartial");
 	}
 }
+<script src="https://cdn.jsdelivr.net/npm/@@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
 <script type="text/javascript">
+
+	function savePresent(id, reservationId) {
+		const link = id !== '' ? `/Restaurant/AssignBenefit/${id}?reservationId=${reservationId}` : `/Restaurant/AssignBenefit?reservationId=${reservationId}`;
+		fetch(link, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			}
+		})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error(`HTTP error! Status: ${response.status}`);
+				}
+				return response.json();
+			})
+			.then(data => {
+				console.log("Benefit assigned successfully!", data);
+			})
+			.catch(error => {
+				console.error("Error assigning benefit:", error);
+			});
+
+	}
+
 	function wheelOfFortune(selector) {
 		const node = document.querySelector(selector);
 		if (!node) return;
 
 		const spin = node.querySelector('button');
 		const wheel = node.querySelector('ul');
+		const reservationId = node.querySelector('input')?.id;
+		const listItems = wheel.querySelectorAll('li');
 		let animation;
 		let previousEndDegree = 0;
 
@@ -144,10 +168,61 @@
 				iterations: 1
 			});
 
-			previousEndDegree = newEndDegree;
+			previousEndDegree = newEndDegree % 360;
+
+			const itemIndex = Math.trunc(previousEndDegree / 30);
+
+			const present = listItems[itemIndex];
+
+			const id = present?.id;
+
+
+			animation.finished.then(() => {
+				const itemIndex = Math.trunc(previousEndDegree / 30);
+				const present = listItems[itemIndex];
+				const id = present?.id;
+				runFireworks();
+
+				savePresent(id, reservationId);
+			});
+			
 		});
 	}
 
 	// Usage
 	wheelOfFortune('.ui-wheel-of-fortune');
+
+	const runFireworks = () => {
+		const duration = 15 * 1000,
+			animationEnd = Date.now() + duration,
+			defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+		function randomInRange(min, max) {
+			return Math.random() * (max - min) + min;
+		}
+
+		const interval = setInterval(function () {
+			const timeLeft = animationEnd - Date.now();
+
+			if (timeLeft <= 0) {
+				return clearInterval(interval);
+			}
+
+			const particleCount = 50 * (timeLeft / duration);
+
+			// since particles fall down, start a bit higher than random
+			confetti(
+				Object.assign({}, defaults, {
+					particleCount,
+					origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+				})
+			);
+			confetti(
+				Object.assign({}, defaults, {
+					particleCount,
+					origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+				})
+			);
+		}, 250);
+	}
 </script>

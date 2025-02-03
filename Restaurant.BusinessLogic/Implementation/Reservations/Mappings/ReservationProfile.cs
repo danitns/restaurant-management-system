@@ -24,7 +24,8 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations.Mappings
 				.ForMember(a => a.RestaurantId, a => a.MapFrom(s => s.Table.RestaurantId))
 				.ForMember(a => a.TotalPrice, a => a.MapFrom(s => s.TotalAmount))
 				.ForMember(a => a.Rating, a => a.MapFrom(s => s.Review.Rating))
-				.ForMember(a => a.TableName, a => a.MapFrom(s => s.Table.Name));
+				.ForMember(a => a.TableName, a => a.MapFrom(s => s.Table.Name))
+				.ForMember(a => a.Benefits, o => o.MapFrom(s => s.Table.Restaurant.Benefits));
 
 			CreateMap<Review, ReviewReservationModel>()
 				.ForMember(a => a.RestaurantName, a => a.MapFrom(s => s.IdNavigation.Table.Restaurant.Name))
@@ -36,7 +37,7 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations.Mappings
 			CreateMap<ProductReview, ReviewProductModel>()
 				.ForMember(a => a.ProductId, a => a.MapFrom(s => s.ProductId))
                 .ForMember(a => a.ProductName, a => a.MapFrom(s => s.Product.Name))
-                .ForMember(a => a.Price, a => a.MapFrom(s => s.Product.Price))
+                .ForMember(a => a.Price, a => a.MapFrom(s => Math.Round(s.Product.Price, 2)))
                 .ForMember(a => a.Picture, a => a.Ignore())
 				.ForMember(a => a.Text, a => a.Ignore())
 				.ForMember(a => a.Rating, a => a.Ignore())

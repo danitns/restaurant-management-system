@@ -42,6 +42,7 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 				.Get()
 				.Include (r => r.Table)
 				.ThenInclude(t => t.Restaurant)
+				.ThenInclude(r => r.Benefits)
 				.Where(x => x.Table.RestaurantId == restaurantId)
 				.ProjectTo<ViewReservationModel>(Mapper.ConfigurationProvider)
 				.ToListAsync();

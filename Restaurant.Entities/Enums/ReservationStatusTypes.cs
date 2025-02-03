@@ -11,6 +11,7 @@ namespace Restaurant.Entities.Enums
         Created = 0,
         Completed = 1,
         Reviewed = 2,
-        Cancelled = 3
-    }
+        Cancelled = 3,
+		Rewarded = 4
+	}
 }

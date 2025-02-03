@@ -1,4 +1,5 @@
-﻿using Restaurant.BusinessLogic.Implementation.Tables.Models;
+﻿using Restaurant.BusinessLogic.Implementation.Restaurants.Models;
+using Restaurant.BusinessLogic.Implementation.Tables.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,5 +28,7 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
         public List<RestaurantScheduleModel> Schedules { get; set; } = new();
 
         public List<TableModel> Tables { get; set; } = new List<TableModel>();
+
+        public List<ViewBenefitModel> Benefits { get; set; } = new();
     }
 }
