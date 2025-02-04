@@ -15,7 +15,7 @@ public partial class Benefit
 
     public int Value { get; set; }
 
-    public virtual Restaurant? Restaurant { get; set; }
+	public virtual Restaurant? Restaurant { get; set; }
 
     public virtual ICollection<UserBenefit> UserBenefits { get; set; } = new List<UserBenefit>();
 }

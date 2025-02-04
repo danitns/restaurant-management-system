@@ -19,6 +19,7 @@ namespace Restaurant.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var reservations = await Service.GetReservations();
+            ViewBag.Points = await Service.GetPoints();
             return View(reservations);
         }
 
@@ -83,5 +84,11 @@ namespace Restaurant.Web.Controllers
 			await Service.ReviewReservation(model);
 			return RedirectToAction("Index");
 		}
+
+        public async Task<IActionResult> ToggleBenefit(Guid id)
+        {
+            await Service.ToggleBenefit(id);
+            return RedirectToAction("Index");
+        }
 	}
 }

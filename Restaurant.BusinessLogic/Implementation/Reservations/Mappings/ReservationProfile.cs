@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Restaurant.BusinessLogic.Implementation.Reservations.Models;
 using Restaurant.Entities;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,12 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations.Mappings
 				.ForMember(a => a.Text, a => a.Ignore())
 				.ForMember(a => a.Rating, a => a.Ignore())
 				.ForMember(a => a.ProductPicture, a => a.MapFrom(s => s.Product.Picture));
+
+			CreateMap<UserBenefit, ViewUserBenefitModel>()
+				.ForMember(a => a.RestaurantName, o => o.MapFrom(s => s.Benefit.Restaurant.Name))
+				.ForMember(a => a.Name, o => o.MapFrom(s => s.Benefit.Name))
+				.ForMember(a => a.Details, o => o.MapFrom(s => s.Benefit.Details))
+				.ForMember(a => a.Value, o => o.MapFrom(s => s.Benefit.Value));
 		}
 
 		private DateTime CombineDateTime(DateOnly date, string timeAsString)

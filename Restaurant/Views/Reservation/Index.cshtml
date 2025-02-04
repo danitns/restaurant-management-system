@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Restaurant.BusinessLogic.Implementation.Reservations.ViewReservationModel>
+﻿@model Restaurant.BusinessLogic.Implementation.Reservations.ListReservationsModel
 @using Restaurant.Entities.Enums
 
 @{
@@ -6,12 +6,64 @@
 }
 
 <div class="row bg-light p-5">
+
+	@if(Model.MyBenefits.Count > 0)
+	{
+		<div class="row register-card pb-3 shadow-lg my-2">
+			<h1 class="mt-2">Your benefits:</h1>
+			@* <h5>Loyalty points: @ViewBag.Points</h5> *@
+			<div id="carouselExample" class="carousel slide">
+				<div class="carousel-inner">
+					@for (int i = 0; i < (int)Math.Ceiling((decimal)(Model.MyBenefits.Count() / 4)); i++)
+					{
+						<div class="carousel-item @(i == 0 ? "active" : "")">
+							<div class="row row-cols-1 row-cols-md-4 g-4">
+								@{
+									int startIndex = i * 4;
+									int count = Math.Min(4, Model.MyBenefits.Count - startIndex);
+								}
+								@foreach (var benefit in Model.MyBenefits.Skip(startIndex).Take(count))
+								{
+									<div class="col">
+										<div class="card h-100">
+											<div class="card-body">
+												<h5 class="card-title">@benefit.Name</h5>
+												<p class="card-text">Restaurant: @benefit.RestaurantName</p>
+												<p class="card-text">Value: @benefit.Value %</p>
+												<p class="card-text">Expiry date: @benefit.ExpiryDate.Value.ToString("dd-MM-yyyy")</p>
+												<small class="text-body-secondary">@(benefit.IsActive.HasValue && benefit.IsActive.Value ? "Active" : "Inactive")</small>
+											</div>
+											<div class="card-footer">
+												<a class="btn btn-outline-primary" asp-action="ToggleBenefit" asp-route-id="@benefit.Id">@(benefit.IsActive.HasValue && benefit.IsActive.Value ? "Disable" : "Activate")</a>
+											</div>
+										</div>
+									</div>
+								}
+							</div>
+
+
+						</div>
+					}
+				</div>
+				<button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev" style="width: unset">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Previous</span>
+				</button>
+				<button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next" style="width: unset">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="visually-hidden">Next</span>
+				</button>
+			</div>
+		</div>
+	}
+	
+
 	<div class="row register-card p-0 shadow-lg my-2">
 		<h1 class="p-2 ms-3">Upcoming reservations</h1>
 		<hr />
-		@if (Model.Where(r => r.Date > DateTime.Now).Any())
+		@if (Model.Reservations.Where(r => r.Date > DateTime.Now).Any())
 		{
-			foreach (var reservation in @Model.Where(r => r.Date > DateTime.Now).ToList())
+			foreach (var reservation in @Model.Reservations.Where(r => r.Date > DateTime.Now).ToList())
 			{
 					<div class="row mb-2 border-bottom reservation-card">
 
@@ -36,9 +88,9 @@
 	<div class="row register-card p-0 shadow-lg my-2">
 		<h1 class="p-2 ms-3">Past reservations</h1>
 		<hr />
-		@if (Model.Where(r => r.Date <= DateTime.Now).Any())
+		@if (Model.Reservations.Where(r => r.Date <= DateTime.Now).Any())
 		{
-			foreach (var reservation in @Model.Where(r => r.Date <= DateTime.Now).ToList())
+			foreach (var reservation in @Model.Reservations.Where(r => r.Date <= DateTime.Now).ToList())
 			{
 				<div class="row mb-2 border-bottom reservation-card">
 
@@ -58,7 +110,7 @@
 						</div>
 						@if (reservation.Status == (int)ReservationStatusTypes.Completed)
 						{
-							<div>Review your experience and get a 10% bonus on your loyalty points</div>
+							<div>Review your experience</div>
 							<a asp-action="ReviewReservation" asp-controller="Reservation" asp-route-id="@reservation.Id" class="btn btn-primary">Review your experience</a>
 						}
 						@if (reservation.Status == (int)ReservationStatusTypes.Reviewed && reservation.TotalPrice >= 100)
@@ -78,7 +130,7 @@
 												<ul>
 													@foreach(var benefit in reservation.Benefits)
 													{
-														<li id="@benefit.Id">@benefit.Name @benefit.Value</li>
+														<li id="@benefit.Id">@benefit.Name</li>
 													}
 													@for (int i = 0; i < 12 - reservation.Benefits.Count(); i++)
 													{
@@ -127,10 +179,6 @@
 				if (!response.ok) {
 					throw new Error(`HTTP error! Status: ${response.status}`);
 				}
-				return response.json();
-			})
-			.then(data => {
-				console.log("Benefit assigned successfully!", data);
 			})
 			.catch(error => {
 				console.error("Error assigning benefit:", error);
@@ -192,8 +240,8 @@
 	// Usage
 	wheelOfFortune('.ui-wheel-of-fortune');
 
-	const runFireworks = () => {
-		const duration = 15 * 1000,
+	const runFireworks = (id, reservationId) => {
+		const duration = 5 * 1000,
 			animationEnd = Date.now() + duration,
 			defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
 
@@ -205,6 +253,7 @@
 			const timeLeft = animationEnd - Date.now();
 
 			if (timeLeft <= 0) {
+				window.location.reload();
 				return clearInterval(interval);
 			}
 

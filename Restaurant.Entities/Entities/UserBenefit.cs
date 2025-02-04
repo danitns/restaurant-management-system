@@ -14,7 +14,9 @@ public partial class UserBenefit
 
     public DateTime? UsedOn { get; set; }
 
-    public virtual Benefit? Benefit { get; set; }
+	public bool? IsActive { get; set; }
+
+	public virtual Benefit? Benefit { get; set; }
 
     public virtual User? User { get; set; }
 }

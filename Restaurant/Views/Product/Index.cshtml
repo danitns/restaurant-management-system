@@ -64,7 +64,7 @@
                         <div class="col-8 p-3 d-flex justify-content-around flex-column">
                             <h3 class="secondary-heading">@product.Name</h3>
                             <div class="d-flex justify-content-start flex-column">
-                                <p><i class="bi bi-geo-alt"></i> Price: @product.Price</p>
+                                <p><i class="bi bi-cash"></i> Price: @product.Price.ToString("#.## RON")</p>
                                 <p><i class="bi bi-compass"></i> Type: @((SubcategoryTypes)product.SubcategoryId)</p>
                             </div>
                             @if (CurrentUser.Role == "Admin" || (CurrentUser.Role == "Manager" && ViewBag.IsMyRestaurant))

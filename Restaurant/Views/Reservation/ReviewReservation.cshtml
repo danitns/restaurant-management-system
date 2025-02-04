@@ -6,7 +6,7 @@
 
 <div class="row p-5">
     <h2>Review Form for @Model.RestaurantName</h2>
-    <div class="register-card p-1 row shadow-lg">
+    <div class="register-card p-1 py-4 row shadow-lg">
         <form asp-action="ReviewReservation" enctype="multipart/form-data">
             <h4>Overall Reservation Review</h4>
             <div class="form-group">
@@ -27,34 +27,45 @@
             <div>
                 @for (int i = 0; i < Model.ProductReviews.Count; i++)
                 {
-                    <div class="border p-3 mb-3">
-                        <h5>@Model.ProductReviews[i].ProductName</h5>
-                        <div style="width: 30%">
-                            <img src="data:image/png;base64,@Convert.ToBase64String(Model.ProductReviews[i].ProductPicture)" class="restaurant-card-img" alt="" />
-                        </div>
-                        
-                        @Html.HiddenFor(m => m.ProductReviews[i].Id)
-                        @Html.HiddenFor(m => m.ProductReviews[i].ProductId)
+                    <div class="border p-3 mb-3 rounded">
+                            <div class="row" style="max-height: 400px">
+                                <div class="col">
+                                    @Html.HiddenFor(m => m.ProductReviews[i].Id)
+                                    @Html.HiddenFor(m => m.ProductReviews[i].ProductId)
 
-                        <div class="form-group">
-                            <label>Product Review Text</label>
-                            @Html.TextAreaFor(m => m.ProductReviews[i].Text, new { @class = "form-control", rows = "2", placeholder = "Write your product review..." })
-                        </div>
+                                    <div class="row">
+                                        <h5>@Model.ProductReviews[i].ProductName</h5>
+                                        <div class="form-group">
+                                            <label>Product Review Text</label>
+                                            @Html.TextAreaFor(m => m.ProductReviews[i].Text, new { @class = "form-control", rows = "2", placeholder = "Write your product review..." })
+                                        </div>
 
-                        <div class="form-group">
-                            <label>Product Rating</label>
-                            @Html.TextBoxFor(m => m.ProductReviews[i].Rating, new { @class = "form-control", type = "number", min = "1", max = "5", placeholder = "Rating (1-5)" })
-                        </div>
 
-                        <div class="form-group">
-                            <label>Upload Product Picture</label>
-                            <input type="file" name="ProductReviews[@i].Picture" class="form-control-file" />
-                        </div>
+                                            <div class="col">
+                                                <label>Price</label>
+                                                @Html.TextBoxFor(m => m.ProductReviews[i].Price, new { @class = "form-control", type = "text", @readonly = "readonly"})
+                                            </div>
+                                            <div class="col">
+                                                <label>Product Rating</label>
+                                                @Html.TextBoxFor(m => m.ProductReviews[i].Rating, new { @class = "form-control", type = "number", min = "1", max = "5", placeholder = "Rating (1-5)" })
+                                            </div>
 
-                        <div class="form-group">
-                            <label>Price</label>
-                            @Html.TextBoxFor(m => m.ProductReviews[i].Price, new { @class = "form-control", type = "text", @readonly = "readonly" })
-                        </div>
+                                        <div class="form-group mt-1">
+                                            <label>Upload Product Picture</label>
+                                            <input type="file" name="ProductReviews[@i].Picture" class="form-control" />
+                                                                    
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col" style="max-height: 350px;">
+                                    <div style="height: 100%; width: auto; max-height: 100%">
+                                        <img src="data:image/png;base64,@Convert.ToBase64String(Model.ProductReviews[i].ProductPicture)" class="restaurant-card-img" alt="" />
+                                    </div>
+                                </div>
+                            </div>
+                          
+                       
                     </div>
                 }
             </div>

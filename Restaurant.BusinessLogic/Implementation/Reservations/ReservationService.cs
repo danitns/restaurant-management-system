@@ -1,6 +1,7 @@
 ﻿using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Restaurant.BusinessLogic.Base;
+using Restaurant.BusinessLogic.Implementation.Reservations.Models;
 using Restaurant.BusinessLogic.Implementation.Reservations.Validations;
 using Restaurant.BusinessLogic.Implementation.Restaurants.Models;
 using Restaurant.Common.Exceptions;
@@ -23,17 +24,31 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 			CreateReservationValidator = new CreateReservationValidator();
 		}
 
-		public async Task<List<ViewReservationModel>> GetReservations()
+		public async Task<ListReservationsModel> GetReservations()
 		{
 			var reservations = await UnitOfWork.Reservations
 				.Get()
 				.Include(r => r.Table)
 					.ThenInclude(t => t.Restaurant)
+					.ThenInclude(b => b.Benefits)
 				.Include(r => r.Review)
 				.Where(r => r.UserId == CurrentUser.Id)
 				.ToListAsync();
 			var mappedReservations = Mapper.Map<List<Reservation>, List<ViewReservationModel>>(reservations);
-			return mappedReservations;
+			var userBenefits = await UnitOfWork.UserBenefits
+				.Get()
+					.Include(ub => ub.Benefit)
+						.ThenInclude(b => b.Restaurant)
+				.Where(ub => ub.UserId == CurrentUser.Id)
+				.OrderBy(ub => ub.ExpiryDate)
+				.ProjectTo<ViewUserBenefitModel>(Mapper.ConfigurationProvider)
+				.ToListAsync();
+			var listReservations = new ListReservationsModel
+			{
+				Reservations = mappedReservations,
+				MyBenefits = userBenefits
+			};
+			return listReservations;
 		}
 
 		public async Task<List<ViewReservationModel>> GetAllReservationsByRestaurantId(Guid restaurantId)
@@ -80,9 +95,9 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 				.ToListAsync();
 
 			var availableTable = tables.FirstOrDefault(t =>
-				!t.Reservations.Any(r => TimeOnly.FromDateTime(r.Date) == parsedTime ||
+				!t.Reservations.Any(r => DateOnly.FromDateTime(r.Date) == model.Date && (TimeOnly.FromDateTime(r.Date) == parsedTime ||
 										   TimeOnly.FromDateTime(r.Date) == parsedTime.AddHours(1) ||
-										   TimeOnly.FromDateTime(r.Date) == parsedTime.AddHours(-1)));
+										   TimeOnly.FromDateTime(r.Date) == parsedTime.AddHours(-1))));
 
 			if (availableTable == null)
 			{
@@ -167,9 +182,29 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 
             var productIds = orderItems.Items.Select(item => item.ProductId).ToList();
 
-			var products = UnitOfWork.Products.Get()
+			var products = await UnitOfWork.Products.Get()
 				.Where(product => productIds.Contains(product.Id))
-				.ToList();
+				.ToListAsync();
+
+			var reservation = await UnitOfWork.Reservations
+				.Get()
+				.Include(r => r.Table)
+				.SingleOrDefaultAsync(r => r.Id == orderItems.ReservationId);
+
+			if (reservation == null)
+			{
+				throw new NotFoundErrorException();
+			}
+
+			var userBenefit = await UnitOfWork.UserBenefits
+				.Get()
+				.Include(ub => ub.Benefit)
+				.Where(ub => ub.UserId == reservation.UserId 
+					&& ub.Benefit.RestaurantId == reservation.Table.RestaurantId
+					&& ub.IsActive == true
+					&& ub.UsedOn == null
+					&& ub.ExpiryDate >= DateTime.Now)
+				.FirstOrDefaultAsync();
 
 			decimal totalPrice = 0;
 
@@ -190,16 +225,15 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 				}
 			}
 
-			review.ProductReviews = productReviewList;
+			if(userBenefit != null) {
+				totalPrice = totalPrice * (((decimal)(100 - userBenefit.Benefit.Value)) / 100);
 
-			var reservation = await UnitOfWork.Reservations
-				.Get()
-				.SingleOrDefaultAsync(r => r.Id == orderItems.ReservationId);
+				userBenefit.UsedOn = DateTime.Now;
 
-			if(reservation == null)
-			{
-				throw new NotFoundErrorException();
+				UnitOfWork.UserBenefits.Update(userBenefit);
 			}
+
+			review.ProductReviews = productReviewList;
 
 			reservation.Status = (short)ReservationStatusTypes.Completed;
 			reservation.TotalAmount = ((int)totalPrice);
@@ -296,6 +330,34 @@ namespace Restaurant.BusinessLogic.Implementation.Reservations
 			UnitOfWork.Reviews.Update(review);
 			UnitOfWork.Reservations.Update(reservation);
 			await UnitOfWork.SaveChangesAsync();
+		}
+
+		public async Task ToggleBenefit(Guid benefitId)
+		{
+			var benefit = await UnitOfWork.UserBenefits
+				.Get()
+				.SingleOrDefaultAsync(ub => ub.Id == benefitId);
+
+
+			if (benefit == null)
+			{
+				throw new NotFoundErrorException();
+			}
+
+			benefit.IsActive = !benefit.IsActive;
+
+			UnitOfWork.UserBenefits.Update(benefit);
+			await UnitOfWork.SaveChangesAsync();
+		}
+
+		public async Task<int> GetPoints()
+		{
+			var points = await UnitOfWork.Users
+				.Get()
+				.Where(u => u.Id == CurrentUser.Id)
+				.Select(u => u.Points)
+				.SingleOrDefaultAsync();
+			return points;
 		}
 	}
 }

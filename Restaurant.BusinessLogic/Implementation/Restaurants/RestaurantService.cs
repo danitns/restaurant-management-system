@@ -211,6 +211,7 @@ namespace Restaurant.BusinessLogic.Implementation.Restaurants
 					BenefitId = benefit.Id,
 					ExpiryDate = DateTime.UtcNow.AddMonths(1),
 					UserId = CurrentUser.Id,
+					IsActive = false,
 				};
 
 				UnitOfWork.UserBenefits.Insert(userBenefit);
